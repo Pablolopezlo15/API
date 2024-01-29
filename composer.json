@@ -1,0 +1,31 @@
+{
+    "name": "ignacio/api-rest-ful",
+    "description": "API",
+    "type": "api",
+    "autoload": {
+        "psr-4": {
+            "Ignacio\\ApiRestFul\\": "src/",
+            "Controllers\\": "src/Controllers/",
+            "Models\\": "src/Models/",
+            "Repositories\\": "src/Repositories/",
+            "Services\\": "src/Services/",
+            "Utils\\": "src/Utils/",
+            "Views\\": "src/Views/",
+            "Routes\\": "src/Routes/",
+            "Lib\\": "src/Lib/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Pablo Lopez Lozano",
+            "email": "plopezlozano12@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "composer/composer": "^2.6",
+        "vlucas/phpdotenv": "^5.6",
+        "emarref/jwt": "^1.0",
+        "firebase/php-jwt": "^6.10"
+    }
+}
