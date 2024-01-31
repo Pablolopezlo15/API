@@ -121,6 +121,7 @@ class UsuarioController {
     // Método para confirmar la cuenta de un usuario
     public function confirmarCuenta($token){
         $this->usuarioService->confirmarCuenta($token);
+        $this->pages->render('/usuario/login', ['mensaje' => 'Cuenta confirmada correctamente']);
     }
 
     // Método para iniciar sesión

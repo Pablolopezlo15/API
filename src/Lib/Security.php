@@ -61,4 +61,43 @@ class Security {
         }
     }
 
+    final public static function decodeToken($token) {
+        try {
+            $decodeToken = JWT::decode($token, new Key(Security::clavesecreta(), 'HS256'));
+            return $decodeToken;
+        } catch (PDOException $exception) {
+            return $response['message'] = json_decode( ResponseHttp::statusMessage(401, 'Token expirado o invalido'));
+        }
+    }
+
+
+    final public static function verificarToken($token, $usuario) {
+        try {
+            // Decodificar el token JWT
+            $decodeToken = JWT::decode($token, new Key(self::clavesecreta(), 'HS256'));
+            
+            // Verificar si el token está expirado
+            $currentTimestamp = time();
+            if ($currentTimestamp < $decodeToken->exp || $currentTimestamp > $decodeToken->iat) {
+            
+
+                if (($usuario->email == $decodeToken[2]) && ($usuario->confirmado == $decodeToken[3])) {
+                    return ['valid' => true, 'data' => $decodeToken->data];
+                }
+                else {
+                    return ['valid' => false, 'message' => 'Token inválido'];
+                }
+            }
+            else {
+                return ['valid' => false, 'message' => 'Token Expirado'];
+            }
+            // Si todo está bien, el token es válido
+            // return ['valid' => true, 'data' => $decodeToken->data];º
+        } catch (Exception $exception) {
+            // Capturar cualquier excepción que ocurra al decodificar el token
+            return ['valid' => false, 'message' => 'Token inválido'];
+        }
+    }
+    
+
 }

@@ -17,6 +17,9 @@
         </div>
     <?php endif; ?>
     <?php endif;?>
+    <?php if (!empty($mensaje)):?>
+        <strong class="exito">Cuenta confirmada correctamente</strong>
+    <?php endif;?>
     <?php if(!isset($_SESSION['login']) OR $_SESSION['login'] == 'failed'):?>
     <form action="<?=BASE_URL?>usuario/login/" method="POST">
         <label for="email">Email</label>

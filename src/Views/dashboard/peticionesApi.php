@@ -11,7 +11,7 @@ if (!isset($_SESSION['login'])) {
 
 <script>
 document.getElementById('getPonentes').addEventListener('click', function() {
-    fetch('http://localhost/ApiRestFul/ponente')
+    fetch('http://localhost/API/ponente')
         .then(response => response.json())
         .then(data => {
             document.getElementById('ponentes').innerText = JSON.stringify(data, null, 2);
@@ -31,7 +31,7 @@ document.getElementById('getPonentes').addEventListener('click', function() {
 document.getElementById('buscarPonente').addEventListener('submit', function(event) {
     event.preventDefault();
     var id = document.getElementById('id').value;
-    fetch('http://localhost/ApiRestFul/ponente/' + id)
+    fetch('http://localhost/API/ponente/' + id)
         .then(response => response.json())
         .then(data => {
             document.getElementById('ponente').innerText = JSON.stringify(data, null, 2);

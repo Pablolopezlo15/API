@@ -33,7 +33,7 @@ class Email {
             // Content
             $mail->isHTML(true);                                 
             $mail->Subject = 'Confirmación de cuenta';
-            $mail->Body    = 'Para confirmar tu cuenta, haz click en el siguiente enlace: <a href="http://localhost/API/usuario/ConfirmarCuenta/token=' . $this->token . '">Confirmar cuenta</a>';
+            $mail->Body = 'Para confirmar tu cuenta, haz click en el siguiente enlace: <a href="http://localhost/API/usuario/ConfirmarCuenta/' . $this->token . '">Confirmar cuenta</a>';
 
             $mail->send();
             return true;

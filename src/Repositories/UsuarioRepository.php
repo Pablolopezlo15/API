@@ -62,46 +62,32 @@ class UsuarioRepository {
         return $result;
     }
 
-    public function confirmarCuenta($id, $usuario){
-        $id = $usuario->getId();
-        $nombre = $usuario->getNombre();
-        $apellidos = $usuario->getApellidos();
-        $email = $usuario->getEmail();
-        $password = $usuario->getPassword();
-        $rol = $usuario->getRol();
-        $confirmado = 1;
-        $data = [];
-        array_push($data, $id, $nombre, $email, $rol, $confirmado);
-        $token = $this->security->crearTokenExpirado($data);
-        $token_exp = date('Y-m-d H:i:s', strtotime('-1 day'));
-
-
-        try {
-            $upd = $this->db->prepara("UPDATE usuarios SET confirmado = 1 WHERE id = :id");
-            $upd->bindValue(':id', $id);
-            $upd->execute();
+    public function confirmarCuenta($token){
+        if ($token) {
+            $tokenDecoded = $this->security->decodeToken($token);
+            $email = $tokenDecoded->data[2];
     
-            $upd2 = $this->db->prepara("UPDATE usuarios SET token = :token WHERE id = :id");
-            $upd2->bindValue(':id', $id);
-            $upd2->bindValue(':token', $token);
-            $upd2->execute();
-
-            $upd3 = $this->db->prepara("UPDATE usuarios SET token_exp = :token_exp WHERE id = :id");
-            $upd3->bindValue(':id', $id);
-            $upd3->bindValue(':token_exp', $token_exp);
-            $upd3->execute();
-
-
-            
-            $result = true;
-        } catch (PDOException $error){
-            $result = false;
+            $this->executeQuery("UPDATE usuarios SET confirmado = 1 WHERE email = :email", $email);
+            $this->executeQuery("UPDATE usuarios SET token = null WHERE email = :email", $email);
+    
+            $this->db->close();
+    
+            return true;
+        } else {
+            echo "No se ha podido confirmar la cuenta";
+            return false;
+        }
+    }
+    
+    private function executeQuery($sql, $email) {
+        $stmt = $this->db->prepara($sql);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+    
+        if (!$stmt->execute()) {
+            throw new Exception('Error al ejecutar la consulta SQL: ' . $stmt->errorInfo()[2]);
         }
     
-        $upd->closeCursor();
-        $upd=null;
-    
-        return $result;
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
 

@@ -11,6 +11,10 @@ use Lib\Router;
 class Routes {
     public static function index() {
 
+        Router::add('GET', '/', function() {
+            return (new DashboardController())->index();
+        });
+
         Router::add('GET', '/ponente', function() {
             return (new PonenteController())->read();
         });
@@ -19,15 +23,15 @@ class Routes {
             return (new PonenteController())->crearPonente($_POST);
         });
 
-        Router::add('GET', '/ponente/:id', function($id) {
+        Router::add('GET', '/ponente/{id}', function($id) {
             return (new PonenteController())->buscarPonente($id);
         });
 
-        Router::add('DELETE', '/ponente/:id', function($id) {
+        Router::add('DELETE', '/ponente/{id}', function($id) {
             return (new PonenteController())->delete($id);
         });
 
-        // Router::add('PUT', '/ponente/:id', function($id) {
+        // Router::add('PUT', '/ponente/{id}', function($id) {
         //     return (new PonenteController())->update($id, $_POST);
         // });
 
@@ -51,9 +55,12 @@ class Routes {
             return (new UsuarioController())->logout();
         });
 
-        Router::add('GET', '/usuario/confirmarCuenta/:token', function($token) {
+        Router::add('GET', '/usuario/ConfirmarCuenta/{token}', function($token) {
             return (new UsuarioController())->confirmarCuenta($token);
         });
+        
+        
+        
         
 
         Router::add('GET', '/peticiones', function() {
