@@ -16,29 +16,31 @@ class Email {
     }
 
     public function enviarConfirmacion() {
-
         try{
-            $mail = new PHPMailer();
+            $mail = new PHPMailer(true); // Habilita las excepciones
             $mail->isSMTP();                                            
-            $mail->Host       = $_ENV['MAIL_HOST'];                  
+            $mail->Host       = $_ENV['MAIL_HOST']; 
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;                 
             $mail->SMTPAuth   = true;                                  
             $mail->Username   = $_ENV['MAIL_USERNAME'];                  
             $mail->Password   = $_ENV['MAIL_PASSWORD'];                             
             $mail->Port       = $_ENV['MAIL_PORT'];
-
+    
             //Recipients
             $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'], $_ENV['MAIL_FROM_NAME']);
-            $mail->addAddress($this->email);     // Add a recipient
-
+            $mail->addAddress($this->email, 'Usuario');
+    
             // Content
-            $mail->isHTML(true);                                  // Set email format to HTML
+            $mail->isHTML(true);                                 
             $mail->Subject = 'Confirmación de cuenta';
-            $mail->Body    = 'Para confirmar tu cuenta, haz click en el siguiente enlace: <a href="http://localhost/ApiRestFul/ConfirmarCuenta?token=' . $this->token . '">Confirmar cuenta</a>';
+            $mail->Body    = 'Para confirmar tu cuenta, haz click en el siguiente enlace: <a href="http://localhost/API/usuario/ConfirmarCuenta/token=' . $this->token . '">Confirmar cuenta</a>';
 
             $mail->send();
             return true;
         } catch (Exception $e) {
-            return false;
+            return 'Error al enviar el correo: ' . $e->getMessage();
         }
     }
+
+
 }

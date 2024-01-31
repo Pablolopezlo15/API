@@ -16,38 +16,38 @@ class Usuario
     /**
      * @var string|null $id El ID del usuario.
      */
-    private string|null $id;
+    public string|null $id;
 
     /**
      * @var string $nombre El nombre del usuario.
      */
-    private string $nombre;
+    public string $nombre;
 
     /**
      * @var string $apellidos Los apellidos del usuario.
      */
-    private string $apellidos;
+    public string $apellidos;
 
     /**
      * @var string $email El email del usuario.
      */
-    private string $email;
+    public string $email;
 
     /**
      * @var string $password La contraseña del usuario.
      */
-    private string $password;
+    public string $password;
 
     /**
      * @var string $rol El rol del usuario.
      */
-    private string $rol;
+    public string $rol;
 
-    private int $confirmado;
+    public int $confirmado;
 
-    private string $token;
+    public string $token;
 
-    private string $token_exp;
+    public string $token_exp;
 
     /**
      * @var BaseDatos $db La conexión a la base de datos.

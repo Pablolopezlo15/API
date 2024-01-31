@@ -1,15 +1,15 @@
 <?php
 namespace Repositories;
 use Lib\BaseDatos;
+use Lib\Email;
 use Lib\Security;
 use PDO;
 use PDOException;
 
-
 class UsuarioRepository {
     private BaseDatos $db;
     private Security $security;
-
+    private Email $email;
     public function __construct() {
         $this->db = new BaseDatos();
         $this->security = new Security();
@@ -49,6 +49,9 @@ class UsuarioRepository {
             $ins->execute();
 
             $result = true;
+            $this->email = new Email($email, $token);
+            $this->email->enviarConfirmacion();
+
         } catch (PDOException $error){
             $result = false;
         }
@@ -56,6 +59,48 @@ class UsuarioRepository {
         $ins->closeCursor();
         $ins=null;
 
+        return $result;
+    }
+
+    public function confirmarCuenta($id, $usuario){
+        $id = $usuario->getId();
+        $nombre = $usuario->getNombre();
+        $apellidos = $usuario->getApellidos();
+        $email = $usuario->getEmail();
+        $password = $usuario->getPassword();
+        $rol = $usuario->getRol();
+        $confirmado = 1;
+        $data = [];
+        array_push($data, $id, $nombre, $email, $rol, $confirmado);
+        $token = $this->security->crearTokenExpirado($data);
+        $token_exp = date('Y-m-d H:i:s', strtotime('-1 day'));
+
+
+        try {
+            $upd = $this->db->prepara("UPDATE usuarios SET confirmado = 1 WHERE id = :id");
+            $upd->bindValue(':id', $id);
+            $upd->execute();
+    
+            $upd2 = $this->db->prepara("UPDATE usuarios SET token = :token WHERE id = :id");
+            $upd2->bindValue(':id', $id);
+            $upd2->bindValue(':token', $token);
+            $upd2->execute();
+
+            $upd3 = $this->db->prepara("UPDATE usuarios SET token_exp = :token_exp WHERE id = :id");
+            $upd3->bindValue(':id', $id);
+            $upd3->bindValue(':token_exp', $token_exp);
+            $upd3->execute();
+
+
+            
+            $result = true;
+        } catch (PDOException $error){
+            $result = false;
+        }
+    
+        $upd->closeCursor();
+        $upd=null;
+    
         return $result;
     }
 
@@ -76,7 +121,7 @@ class UsuarioRepository {
 
             if ($datosUsuario !== false && $datosUsuario !== null){
                 $verify = password_verify($password, $datosUsuario->password);
-
+                
                 if ($verify){
                     $result = $datosUsuario;
                 } else {

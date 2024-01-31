@@ -13,6 +13,10 @@ class UsuarioService {
         return $this->usuarioRepository->create($usuario);
     }
 
+    public function confirmarCuenta($id){
+        return $this->usuarioRepository->confirmarCuenta($id);
+    }
+
     public function verTodos() {
         return $this->usuarioRepository->verTodos();
     }

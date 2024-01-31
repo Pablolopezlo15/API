@@ -51,7 +51,10 @@ class Routes {
             return (new UsuarioController())->logout();
         });
 
-
+        Router::add('GET', '/usuario/confirmarCuenta/:token', function($token) {
+            return (new UsuarioController())->confirmarCuenta($token);
+        });
+        
 
         Router::add('GET', '/peticiones', function() {
             return (new DashboardController())->peticiones();

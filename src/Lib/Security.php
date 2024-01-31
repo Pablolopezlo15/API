@@ -26,8 +26,19 @@ class Security {
     final public static function crearToken(array $data):string{
         $time = strtotime('now');
         $token = array(
+            "iat" => $time,
+            "exp" => $time + (30*60),
+            "data" => $data
+        );
+    
+        return JWT::encode($token, $_ENV['SECRET_KEY'], 'HS256');
+    }
+
+    final public static function crearTokenExpirado(array $data):string{
+        $time = strtotime('now');
+        $token = array(
             "lat" => $time,
-            "exp" => $time + (60*60),
+            "exp" => $time - (60*60),
             "data" => $data
         );
 

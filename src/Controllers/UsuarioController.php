@@ -6,9 +6,10 @@ use Lib\Pages;
 use Utils\Utils;
 use Services\UsuarioService;
 use Repositories\UsuarioRepository;
-
+use Lib\Email;
 class UsuarioController {
     private Pages $pages;
+    private Email $email;
     private UsuarioService $usuarioService;
     private $errores = [];
 
@@ -50,7 +51,7 @@ class UsuarioController {
                 'nombre' => $nombre,
                 'apellidos' => $apellidos,
                 'email' => $email,
-                'password' => password_hash($password, PASSWORD_BCRYPT, ['cost'=>4])
+                'password' => password_hash($password, PASSWORD_BCRYPT, ['cost'=>4]),
             ];
         } else {
             return $this->errores;
@@ -59,6 +60,7 @@ class UsuarioController {
 
     // Método para validar el inicio de sesión
     private function validarLogin($data) {
+
         $email = filter_var($data['email'], FILTER_VALIDATE_EMAIL);
         $password = filter_var($data['password'], FILTER_SANITIZE_STRING);
     
@@ -91,12 +93,15 @@ class UsuarioController {
 
                 if ($registrado != ""){
                     if (is_array($registrado)) {
+         
                         $usuario = Usuario::fromArray($registrado);
                         $save = $this->usuarioService->create($usuario);
                         $registrado = "";
                         if ($save){
                             $_SESSION['register'] = "complete";
+                            
                         } else {
+                            echo "Error al crear el usuario\n";
                             $_SESSION['register'] = "failed";
                         }
                     } else {
@@ -113,6 +118,11 @@ class UsuarioController {
         $this->pages->render('/usuario/registro', ['errores' => $this->errores]);
     }
 
+    // Método para confirmar la cuenta de un usuario
+    public function confirmarCuenta($token){
+        $this->usuarioService->confirmarCuenta($token);
+    }
+
     // Método para iniciar sesión
     public function login(){
         if (($_SERVER['REQUEST_METHOD']) === 'POST'){
@@ -121,9 +131,13 @@ class UsuarioController {
     
                 if ($login !== false) {
                     $usuario = Usuario::fromArray($login);
+
                     $verify = $this->usuarioService->login($usuario);
-    
-                    if ($verify!=false){
+
+                    if($verify->confirmado == 0){
+                        $_SESSION['login'] = "noconfirmado";
+                    }
+                    elseif ($verify!=false){
                         $_SESSION['login'] = $verify;
                         header("Location:".BASE_URL."peticiones");
                     } else {
