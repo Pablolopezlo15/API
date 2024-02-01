@@ -180,5 +180,17 @@ class Ponente {
         $this->db->close();
         return $ponente ?: null;
     }
+
+    public function obtenerFechaExpiracion($email) {
+        $sql = $this->db->prepara("SELECT token_exp FROM usuarios WHERE email = :email");
+        $sql->bindValue(':email', $email);
+        $sql->execute();
+        $fecha = $sql->fetch(PDO::FETCH_ASSOC);
+        $sql->closeCursor();
+
+        $this->db->close();
+        return $fecha ?: null;
+        header("Location:".BASE_URL."peticiones");
+    }
     
 }

@@ -4,6 +4,10 @@ body {
     padding: 0;
 }
 
+section h1{
+    text-align: center;
+}
+
 .container {
     max-width: 800px;
     margin: 20px auto;

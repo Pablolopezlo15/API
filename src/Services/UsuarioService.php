@@ -17,6 +17,10 @@ class UsuarioService {
         return $this->usuarioRepository->confirmarCuenta($token);
     }
 
+    public function updateToken($id, $token) {
+        return $this->usuarioRepository->updateToken($id, $token);
+    }
+
     public function verTodos() {
         return $this->usuarioRepository->verTodos();
     }

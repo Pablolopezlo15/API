@@ -1,5 +1,5 @@
 {
-    "name": "ignacio/api-rest-ful",
+    "name": "usuario/api",
     "description": "API",
     "type": "api",
     "autoload": {

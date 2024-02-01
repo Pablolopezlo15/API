@@ -43,11 +43,22 @@ class PonenteController {
     }
 
     public function read(){
+
+        $token_exp = $_SESSION['login']->token_exp;
+    
+        if ($token_exp < strtotime('now')) {
+            $response = ResponseHttp::statusMessage(401, 'Token caducado.');
+            echo json_encode($response);
+            exit();
+        }
+
         $ponente = new Ponente("","","","","","");
         $ponentes = $ponente->read();
         $ponenteCount = count($ponentes);
         $ponentesArr = array();
         $ponentesArr['ponentes'] = array();
+
+        // $token = Security::getToken();
 
         if($ponenteCount > 0){
         foreach($ponentes as $fila) {
@@ -64,14 +75,12 @@ class PonenteController {
     }
 
     public function buscarPonente($id) {
+        
+        $id_usuario = $_SESSION['login']->id;
+        $usuario = $usuario->getById($id_usuario);
+        $token = $usuario['token'];
 
-        $token = Security::getToken();
-
-        if ($token == null) {
-            $response = ResponseHttp::statusMessage(401, 'Token inválido o no proporcionado.');
-            echo json_encode($response);
-            exit();
-        }
+        Security::verificarToken($token);
 
         $ponente = new Ponente($id, "", "", "", "", "");
         $ponente = $ponente->getById();

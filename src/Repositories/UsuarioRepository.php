@@ -31,7 +31,7 @@ class UsuarioRepository {
         $data = [];
         array_push($data, $id, $nombre, $email, $rol, $confirmado);
         $token = $this->security->crearToken($data);
-        $token_exp = date('Y-m-d H:i:s', strtotime('+1 day'));
+        $token_exp = date('Y-m-d H:i:s', strtotime('+30 minutes'));
 
         try {
             $ins = $this->db->prepara("INSERT INTO usuarios (id, nombre, apellidos, email, password, rol, confirmado, token, token_exp) values (:id, :nombre, :apellidos, :email, :password, :rol, :confirmado, :token, :token_exp)");
@@ -62,34 +62,70 @@ class UsuarioRepository {
         return $result;
     }
 
+    // public function confirmarCuenta($token){
+    //     if ($token) {
+    //         $tokenDecoded = $this->security->decodeToken($token);
+    //         $email = $tokenDecoded->data[2];
+    //         $datenow = date('Y-m-d H:i:s'); 
+
+    //         $this->executeQuery("UPDATE usuarios SET confirmado = 1 WHERE email = :email", $email);
+    //         $this->executeQuery("UPDATE usuarios SET token = '' WHERE email = :email", $email);
+
+    
+    //         $this->db->close();
+    
+    //         return true;
+    //     } else {
+    //         echo "No se ha podido confirmar la cuenta";
+    //         return false;
+    //     }
+    // }
+    
     public function confirmarCuenta($token){
+
+        $tokenDecode = Security::decodeToken($token);
+        $exp = $tokenDecode->exp;
+        $now = time();
+
+        if ($exp < $now) {
+            echo "No se ha podido confirmar la cuenta";
+            return false;
+        }
+
         if ($token) {
             $tokenDecoded = $this->security->decodeToken($token);
             $email = $tokenDecoded->data[2];
+            $datenow = date('Y-m-d H:i:s'); 
     
-            $this->executeQuery("UPDATE usuarios SET confirmado = 1 WHERE email = :email", $email);
-            $this->executeQuery("UPDATE usuarios SET token = null WHERE email = :email", $email);
-    
-            $this->db->close();
-    
+            $ins = $this->db->prepara("UPDATE usuarios SET confirmado = 1, token_exp = :datenow WHERE email = :email");
+
+            $ins->bindValue(':email', $email);
+            $ins->bindValue(':datenow', $datenow);
+            $ins->execute();
+            $ins->closeCursor();
+            $ins=null;
+
             return true;
         } else {
             echo "No se ha podido confirmar la cuenta";
             return false;
         }
     }
-    
-    private function executeQuery($sql, $email) {
-        $stmt = $this->db->prepara($sql);
-        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-    
-        if (!$stmt->execute()) {
-            throw new Exception('Error al ejecutar la consulta SQL: ' . $stmt->errorInfo()[2]);
-        }
-    
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
 
+    public function updateToken($id, $token){
+        $token_exp = date('Y-m-d H:i:s', strtotime('+30 minutes'));
+
+        $sql = "UPDATE usuarios SET token = :token, token_exp = :token_exp WHERE id = :id";
+        $stmt = $this->db->prepara($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':token', $token, PDO::PARAM_STR);
+        $stmt->bindParam(':token_exp', $token_exp, PDO::PARAM_STR);
+        $stmt->execute();
+        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+        $this->db->close();
+
+        return $usuario;
+    }
 
     public function verTodos(){
         $sql = "SELECT * FROM usuarios";

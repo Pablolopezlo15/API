@@ -34,15 +34,26 @@ class Security {
         return JWT::encode($token, $_ENV['SECRET_KEY'], 'HS256');
     }
 
-    final public static function crearTokenExpirado(array $data):string{
-        $time = strtotime('now');
-        $token = array(
-            "lat" => $time,
-            "exp" => $time - (60*60),
-            "data" => $data
-        );
-
-        return JWT::encode($token, $_ENV['SECRET_KEY'], 'HS256');
+    final public static function expirarToken($token) {
+        // Decodificar el token para obtener la fecha de expiración
+        $decodedToken = JWT::decode($token, $_ENV['SECRET_KEY'], ['HS256']);
+        $tokenExp = $decodedToken->exp;
+    
+        // Obtener la fecha y hora actuales
+        $now = time();
+    
+        // Si el token aún no ha expirado, expirarlo
+        if ($now < $tokenExp) {
+            // Establecer la fecha de expiración del token a la fecha y hora actuales
+            $decodedToken->exp = $now;
+    
+            // Codificar el token y devolverlo
+            $expiredToken = self::crearToken((array)$decodedToken);
+            return $expiredToken;
+        } else {
+            // El token ya ha expirado, así que simplemente devolverlo tal como está
+            return $token;
+        }
     }
 
     final public static function getToken() {
@@ -71,7 +82,10 @@ class Security {
     }
 
 
-    final public static function verificarToken($token, $usuario) {
+    final public static function verificarToken($token) {
+        $email = $_SESSION['login']->email;
+        $confirmado = $_SESSION['login']->confirmado;
+
         try {
             // Decodificar el token JWT
             $decodeToken = JWT::decode($token, new Key(self::clavesecreta(), 'HS256'));
@@ -81,7 +95,7 @@ class Security {
             if ($currentTimestamp < $decodeToken->exp || $currentTimestamp > $decodeToken->iat) {
             
 
-                if (($usuario->email == $decodeToken[2]) && ($usuario->confirmado == $decodeToken[3])) {
+                if (($email == $decodeToken[2]) && ($confirmado == $decodeToken[3])) {
                     return ['valid' => true, 'data' => $decodeToken->data];
                 }
                 else {
@@ -92,7 +106,7 @@ class Security {
                 return ['valid' => false, 'message' => 'Token Expirado'];
             }
             // Si todo está bien, el token es válido
-            // return ['valid' => true, 'data' => $decodeToken->data];º
+            return ['valid' => true, 'data' => $decodeToken->data];
         } catch (Exception $exception) {
             // Capturar cualquier excepción que ocurra al decodificar el token
             return ['valid' => false, 'message' => 'Token inválido'];

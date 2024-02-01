@@ -124,6 +124,10 @@ class UsuarioController {
         $this->pages->render('/usuario/login', ['mensaje' => 'Cuenta confirmada correctamente']);
     }
 
+    public function updateToken($id, $token){
+        $this->usuarioService->updateToken($id, $token);
+    }
+
     // Método para iniciar sesión
     public function login(){
         if (($_SERVER['REQUEST_METHOD']) === 'POST'){

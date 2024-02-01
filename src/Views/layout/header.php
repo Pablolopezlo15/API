@@ -14,19 +14,6 @@
 </head>
 <body>
 
-    <!-- <header>
-        <h2>API PABLO</h2>
-        <nav>
-            <ul>
-                <?php if(!isset($_SESSION['login'])): ?>
-                <li><a href="<?=BASE_URL?>usuario/login">Login</a></li>
-                <?php else: ?>
-                <li><a href="<?=BASE_URL?>usuario/logout">Cerrar Sesión</a></li>
-                <?php endif; ?>
-            </ul>
-        </nav>
-    </header> -->
-
     <header>
         <nav>
             <div class="navbar">
@@ -46,6 +33,7 @@
                             <a href="<?=BASE_URL?>usuario/registro/">Registrarse</a>
                         <?php else:?>
                             <p><?=$_SESSION['login']->nombre?> <?=$_SESSION['login']->apellidos?></p>
+                            <a href="<?=BASE_URL?>auth/nuevoToken/">Nuevo Token</a>
                             <a href="<?=BASE_URL?>usuario/logout/">Cerrar Sesión</a>
                         <?php endif;?>
                     </div>

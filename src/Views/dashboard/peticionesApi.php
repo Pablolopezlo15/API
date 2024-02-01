@@ -1,7 +1,12 @@
 <?php
+
 if (!isset($_SESSION['login'])) {
     header('Location: ' . BASE_URL . 'usuario/login');
 }
+
+$token = $_SESSION['login']->token;
+var_dump($_SESSION['login']);
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -22,7 +27,11 @@ if (!isset($_SESSION['login'])) {
 
 <script>
 document.getElementById('getPonentes').addEventListener('click', function() {
-    fetch('http://localhost/API/ponente')
+    fetch('http://localhost/API/ponente', {
+      headers: {
+        'Authorization': 'Bearer YOUR_TOKEN'
+      }
+    })
         .then(response => response.json())
         .then(data => {
             document.getElementById('ponentes').innerText = JSON.stringify(data, null, 2);
@@ -45,13 +54,20 @@ document.getElementById('getPonentes').addEventListener('click', function() {
 <script>
 document.getElementById('buscarPonente').addEventListener('submit', function(event) {
     event.preventDefault();
+    var token = "<?php echo $token; ?>";
     var id = document.getElementById('id').value;
-    fetch('http://localhost/API/ponente/' + id)
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('ponente').innerText = JSON.stringify(data, null, 2);
-        })
-        .catch(error => console.error('Error:', error));
+    fetch('http://localhost/API/ponente/' + id, {
+      headers: {
+        'Authorization': 'Bearer '+ token,
+        'Content-Type': 'application/json'
+      }
+    })
+
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('ponente').innerText = JSON.stringify(data, null, 2);
+    })
+    .catch(error => console.error('Error:', error));
 });
 </script>
 

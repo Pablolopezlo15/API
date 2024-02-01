@@ -59,9 +59,13 @@ class Routes {
             return (new UsuarioController())->confirmarCuenta($token);
         });
         
+        Router::add('GET', '/usuario/{id}', function($id) {
+            return (new UsuarioController())->eliminar($id);
+        });
         
-        
-        
+        Router::add('GET', '/auth/nuevoToken', function() {
+            return (new AuthController())->crearNuevoToken();
+        });
 
         Router::add('GET', '/peticiones', function() {
             return (new DashboardController())->peticiones();
