@@ -21,7 +21,7 @@
         <strong class="exito">Cuenta confirmada correctamente</strong>
     <?php endif;?>
     <?php if(!isset($_SESSION['login']) OR $_SESSION['login'] == 'failed'):?>
-    <form action="<?=BASE_URL?>usuario/login/" method="POST">
+    <form class="formsesion" action="<?=BASE_URL?>usuario/login/" method="POST">
         <label for="email">Email</label>
         <input type="text" name="data[email]" id="email" required>
 

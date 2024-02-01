@@ -15,7 +15,7 @@
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
-    <form action="<?=BASE_URL?>usuario/registro/" method="POST">
+    <form class="formsesion" action="<?=BASE_URL?>usuario/registro/" method="POST">
         <label for="nombre">Nombre</label>
         <input type="text" name="data[nombre]" id="nombre" required>
     

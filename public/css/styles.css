@@ -1,13 +1,121 @@
-ul {
-    display: flex;
-    list-style: none;
-    gap: 1rem;
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-header{
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+.btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.input {
+    padding: 8px;
+}
+
+.label {
+    margin-bottom: 5px;
+}
+
+.search-form {
+    margin-top: 20px;
+}
+
+.result-container {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    white-space: pre-wrap;
+}
+
+form {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    padding: 1rem;
-
 }
+
+  /* Estilos para el formulario de creación de productos */
+  .formsesion {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    width: 800px;
+    margin: auto;
+    padding: 20px;
+    background-color: var(--colorFondo);
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  label {
+    font-size: var(--font-size-pequeño);
+    color: var(--colorTexto);
+  }
+  
+  input,
+  textarea,
+  select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    font-size: var(--font-size-pequeño);
+  }
+  
+  strong {
+    display: block;
+    margin-top: 10px;
+    font-size: var(--font-size-pequeño);
+    color: var(--colorTexto);
+  }
+  
+  /* Estilos para el botón de crear */
+  input[type="submit"] {
+    background-color: var(--colorBoton);
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: var(--font-size-pequeño);
+  }
+  
+  
+  /* Estilos para mensajes de éxito o error */
+  strong {
+    display: block;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: var(--font-size-pequeño);
+  }
+  
+  strong.success {
+    color: green;
+  }
+  
+  strong.error {
+    color: red;
+  }
+
+  button.btn {
+    background-color: var(--colorBoton);
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: var(--font-size-pequeño);
+  }
