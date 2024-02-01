@@ -83,19 +83,6 @@ class Ponente {
         ];
     }
 
-    // public function create(): bool{
-    //     $sql = $this->db->prepara("INSERT INTO ponentes (nombre, apellidos, imagen, tags, redes) VALUES (:nombre, :apellidos, :imagen, :tags, :redes)");
-    //     $sql->bindValue(':nombre', $this->nombre);
-    //     $sql->bindValue(':apellidos', $this->apellidos);
-    //     $sql->bindValue(':imagen', $this->imagen);
-    //     $sql->bindValue(':tags', $this->tags);
-    //     $sql->bindValue(':redes', $this->redes);
-    //     $sql->execute();
-    //     $sql->closeCursor();
-
-    //     $this->db->close();
-    //     return $this->db->filasAfectadas();
-    // }
 
     public function create(): bool {
         try {
@@ -187,7 +174,7 @@ class Ponente {
         $sql = $this->db->prepara("SELECT * FROM ponentes WHERE id = :id");
         $sql->bindValue(':id', $this->id);
         $sql->execute();
-        $ponente = $sql->fetch();
+        $ponente = $sql->fetch(PDO::FETCH_ASSOC);
         $sql->closeCursor();
 
         $this->db->close();
