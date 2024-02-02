@@ -23,6 +23,10 @@ class Routes {
             return (new PonenteController())->crearPonente($_POST);
         });
 
+        Router::add('POST', '/ponente/{id}', function($id) {
+            return (new PonenteController())->buscarPonente($id);
+        });
+
         Router::add('GET', '/ponente/{id}', function($id) {
             return (new PonenteController())->buscarPonente($id);
         });
@@ -59,10 +63,7 @@ class Routes {
             return (new UsuarioController())->confirmarCuenta($token);
         });
         
-        Router::add('GET', '/usuario/{id}', function($id) {
-            return (new UsuarioController())->eliminar($id);
-        });
-        
+
         Router::add('GET', '/auth/nuevoToken', function() {
             return (new AuthController())->crearNuevoToken();
         });

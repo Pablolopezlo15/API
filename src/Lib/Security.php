@@ -3,6 +3,7 @@
 namespace Lib;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use Firebase\JWT\ExpiredException;
 use PDOException;
 class Security {
 
@@ -25,9 +26,10 @@ class Security {
 
     final public static function crearToken(array $data):string{
         $time = strtotime('now');
+        $exp = strtotime('+30 minutes');
         $token = array(
             "iat" => $time,
-            "exp" => $time + (30*60),
+            "exp" => $exp,
             "data" => $data
         );
     
@@ -56,62 +58,90 @@ class Security {
         }
     }
 
+    // final public static function getToken() {
+    //     $headers = apache_request_headers();
+    //     if (!isset($headers['Authorization'])) {
+
+    //         return $response['message'] = json_decode( ResponseHttp::statusMessage(403, 'Acceso denegado'));
+    //     }
+    //     try {
+    //         $authorizationArray = explode(' ', $headers['Authorization']);
+    //         $token = $authorizationArray[1];
+    //         $decodeToken = JWT::decode($token,new Key(Security::clavesecreta(), 'HS256'));
+    //         return $decodeToken;
+
+    //     } catch (PDOException $exception) {
+    //         return $response['message'] = json_decode( ResponseHttp::statusMessage(401, 'Token expirado o invalido'));
+    //     }
+    // }
+
     final public static function getToken() {
         $headers = apache_request_headers();
         if (!isset($headers['Authorization'])) {
-            return $response['message'] = json_decode( ResponseHttp::statusMessage(403, 'Acceso denegado'));
+            return json_encode(['message' => ResponseHttp::statusMessage(403, 'Acceso denegado')]);
         }
         try {
             $authorizationArray = explode(' ', $headers['Authorization']);
             $token = $authorizationArray[1];
             $decodeToken = JWT::decode($token,new Key(Security::clavesecreta(), 'HS256'));
-            return $decodeToken;
-
-        } catch (PDOException $exception) {
-            return $response['message'] = json_decode( ResponseHttp::statusMessage(401, 'Token expirado o invalido'));
-        }
-    }
-
-    final public static function decodeToken($token) {
-        try {
-            $decodeToken = JWT::decode($token, new Key(Security::clavesecreta(), 'HS256'));
-            return $decodeToken;
-        } catch (PDOException $exception) {
-            return $response['message'] = json_decode( ResponseHttp::statusMessage(401, 'Token expirado o invalido'));
-        }
-    }
-
-
-    final public static function verificarToken($token) {
-        $email = $_SESSION['login']->email;
-        $confirmado = $_SESSION['login']->confirmado;
-
-        try {
-            // Decodificar el token JWT
-            $decodeToken = JWT::decode($token, new Key(self::clavesecreta(), 'HS256'));
-            
-            // Verificar si el token está expirado
-            $currentTimestamp = time();
-            if ($currentTimestamp < $decodeToken->exp || $currentTimestamp > $decodeToken->iat) {
-            
-
-                if (($email == $decodeToken[2]) && ($confirmado == $decodeToken[3])) {
-                    return ['valid' => true, 'data' => $decodeToken->data];
-                }
-                else {
-                    return ['valid' => false, 'message' => 'Token inválido'];
-                }
+            var_dump($decodeToken);
+            die();
+            // Verificar si el token es válido
+            if ($decodeToken->exp >= time()) {
+                return $decodeToken;
+            } else {
+                return json_encode(['message' => ResponseHttp::statusMessage(401, 'Token expirado o invalido')]);
             }
-            else {
-                return ['valid' => false, 'message' => 'Token Expirado'];
-            }
-            // Si todo está bien, el token es válido
-            return ['valid' => true, 'data' => $decodeToken->data];
-        } catch (Exception $exception) {
-            // Capturar cualquier excepción que ocurra al decodificar el token
-            return ['valid' => false, 'message' => 'Token inválido'];
+        
+        } catch (ExpiredException $expiredException) {
+            return json_encode(['message' => ResponseHttp::statusMessage(401, 'Token expirado')]);
+        } catch (PDOException $exception) {
+            return json_encode(['message' => ResponseHttp::statusMessage(401, 'Token invalido')]);
         }
     }
+
+
+
+    // final public static function decodeToken($token) {
+    //     try {
+    //         $decodeToken = JWT::decode($token, new Key(Security::clavesecreta(), 'HS256'));
+    //         return $decodeToken;
+    //     } catch (PDOException $exception) {
+    //         return $response['message'] = json_decode( ResponseHttp::statusMessage(401, 'Token expirado o invalido'));
+    //     }
+    // }
+
+
+    // final public static function verificarToken($token) {
+    //     $email = $_SESSION['login']->email;
+    //     $confirmado = $_SESSION['login']->confirmado;
+
+    //     try {
+    //         // Decodificar el token JWT
+    //         $decodeToken = JWT::decode($token, new Key(self::clavesecreta(), 'HS256'));
+            
+    //         // Verificar si el token está expirado
+    //         $currentTimestamp = time();
+    //         if ($currentTimestamp < $decodeToken->exp || $currentTimestamp > $decodeToken->iat) {
+            
+
+    //             if (($email == $decodeToken[2]) && ($confirmado == $decodeToken[3])) {
+    //                 return ['valid' => true, 'data' => $decodeToken->data];
+    //             }
+    //             else {
+    //                 return ['valid' => false, 'message' => 'Token inválido'];
+    //             }
+    //         }
+    //         else {
+    //             return ['valid' => false, 'message' => 'Token Expirado'];
+    //         }
+    //         // Si todo está bien, el token es válido
+    //         return ['valid' => true, 'data' => $decodeToken->data];
+    //     } catch (Exception $exception) {
+    //         // Capturar cualquier excepción que ocurra al decodificar el token
+    //         return ['valid' => false, 'message' => 'Token inválido'];
+    //     }
+    // }
     
 
 }

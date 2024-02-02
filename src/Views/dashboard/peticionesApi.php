@@ -4,9 +4,6 @@ if (!isset($_SESSION['login'])) {
     header('Location: ' . BASE_URL . 'usuario/login');
 }
 
-$token = $_SESSION['login']->token;
-var_dump($_SESSION['login']);
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -27,16 +24,18 @@ var_dump($_SESSION['login']);
 
 <script>
 document.getElementById('getPonentes').addEventListener('click', function() {
+    TOKEN = "<?= $_SESSION['login']->token ?>";
+    console.log(TOKEN);
     fetch('http://localhost/API/ponente', {
-      headers: {
-        'Authorization': 'Bearer YOUR_TOKEN'
-      }
+  headers: {
+    'Authorization': 'Bearer ' + TOKEN
+  }
+})
+    .then(response => {return response.json();})
+    .then(data => {
+        document.getElementById('ponentes').innerText = JSON.stringify(data, null, 2);
     })
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('ponentes').innerText = JSON.stringify(data, null, 2);
-        })
-        .catch(error => console.error('Error:', error));
+    .catch(error => console.error('Error:', error));
 });
 </script>
 <div class="container">
@@ -54,20 +53,19 @@ document.getElementById('getPonentes').addEventListener('click', function() {
 <script>
 document.getElementById('buscarPonente').addEventListener('submit', function(event) {
     event.preventDefault();
-    var token = "<?php echo $token; ?>";
     var id = document.getElementById('id').value;
+    TOKEN = "<?= $_SESSION['login']->token ?>";
+
     fetch('http://localhost/API/ponente/' + id, {
       headers: {
-        'Authorization': 'Bearer '+ token,
-        'Content-Type': 'application/json'
+        'Authorization': 'Bearer' + TOKEN
       }
     })
-
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById('ponente').innerText = JSON.stringify(data, null, 2);
-    })
-    .catch(error => console.error('Error:', error));
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('ponente').innerText = JSON.stringify(data, null, 2);
+        })
+        .catch(error => console.error('Error:', error));
 });
 </script>
 
@@ -104,6 +102,7 @@ document.getElementById('buscarPonente').addEventListener('submit', function(eve
     fetch('http://localhost/API/ponente', {
         method: 'POST',
         headers: {
+            'Authorization': 'Bearer ' + TOKEN, // 'Bearer ' + token
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(ponente),

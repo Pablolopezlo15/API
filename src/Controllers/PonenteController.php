@@ -5,7 +5,15 @@ namespace Controllers;
 use Models\Ponente;
 use Lib\ResponseHttp;
 use Lib\Security;
+use Services\UsuarioService;
+use Repositories\UsuarioRepository;
 class PonenteController {
+
+    private UsuarioService $usuarioService;
+    public function __construct()
+    {
+        $this->usuarioService = new UsuarioService(new UsuarioRepository());
+    }
     public function crearPonente($data) {
 
             // Obtener el contenido JSON del cuerpo de la solicitud
@@ -44,13 +52,9 @@ class PonenteController {
 
     public function read(){
 
-        $token_exp = $_SESSION['login']->token_exp;
-    
-        if ($token_exp < strtotime('now')) {
-            $response = ResponseHttp::statusMessage(401, 'Token caducado.');
-            echo json_encode($response);
-            exit();
-        }
+        // Obtener el token de la solicitud
+        $token = Security::getToken();
+        $data = Security::verificarToken($token);
 
         $ponente = new Ponente("","","","","","");
         $ponentes = $ponente->read();
@@ -58,7 +62,6 @@ class PonenteController {
         $ponentesArr = array();
         $ponentesArr['ponentes'] = array();
 
-        // $token = Security::getToken();
 
         if($ponenteCount > 0){
         foreach($ponentes as $fila) {
@@ -76,25 +79,28 @@ class PonenteController {
 
     public function buscarPonente($id) {
         
-        $id_usuario = $_SESSION['login']->id;
-        $usuario = $usuario->getById($id_usuario);
-        $token = $usuario['token'];
+        // $id_usuario = $_SESSION['login']->id;
+        // $usuario = $this->usuarioService->getById($id_usuario);
+        // $token = $usuario['token'];
+    
+        // Security::verificarToken($token);
 
-        Security::verificarToken($token);
+        $token = Security::getToken();
 
+        // $data = Security::verificarToken($token);
+    
         $ponente = new Ponente($id, "", "", "", "", "");
         $ponente = $ponente->getById();
         
-        $ponentesArr = array();
-        $ponentesArr['ponentes'] = array();
-
-        if ($ponentesArr > 0) {
+        if ($ponente) {
             $response = ResponseHttp::statusMessage(202, 'Ponente obtenido correctamente.');
             echo json_encode($ponente);
+    
             exit();
         } else {
             $response = ResponseHttp::statusMessage(500, 'Error al obtener el ponente.');
             echo json_encode($response);
+    
             exit();
         }
     }

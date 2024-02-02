@@ -162,8 +162,8 @@ class UsuarioController {
     // Método para cerrar sesión
     public function logout(){
         Utils::deleteSession('login');
-
-        header("Location:".BASE_URL);
+        header("Location:".BASE_URL."usuario/login");
+        exit();
     }
 
     // Método para eliminar un usuario
