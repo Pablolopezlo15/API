@@ -7,7 +7,6 @@ if (!isset($_SESSION['login'])) {
 $id = $_SESSION['login']->id;
 $tokenInfo = $usuarioController->obtenerToken($id);
 $token = $tokenInfo['token'];
-// $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDY5MDkzNDEsImV4cCI6MTcwNjkxMTE0MSwiZGF0YSI6WzEsIlBhYmxvIiwicGxvcGV6bG96YW5vMTJAZ21haWwuY29tIiwidXNlciIsMV19.279XegKeOHwcI-QjC_Y-223wt_R4a5Ene3omeKCCBUU";
 
 
 ?>
@@ -25,6 +24,7 @@ $token = $tokenInfo['token'];
     <p>Token: <?php echo $token; ?></p>
 </div>
 
+<!-- READ -->
 <div class="container">
 
     <h2>Obtener Equipos</h2>
@@ -50,6 +50,8 @@ document.getElementById('getEquipos').addEventListener('click', function() {
     .catch(error => console.error('Error:', error));
 });
 </script>
+
+<!-- READ ID -->
 <div class="container">
     <h2>Buscar Equipos</h2>
     <form id="buscarEquipos" method="GET" action="<?= BASE_URL ?>peticiones" class="search-form">
@@ -83,6 +85,7 @@ document.getElementById('buscarEquipos').addEventListener('submit', function(eve
 });
 </script>
 
+<!-- CREATE -->
 <div class="container">
     <h2>Crear equipo</h2>
     <form id="crearEquipo">
@@ -143,6 +146,7 @@ document.getElementById('buscarEquipos').addEventListener('submit', function(eve
 </script>
 
 
+<!-- DELETE -->
 <div class="container">
     <h2>Borrar equipo</h2>
     <form id="borrarEquipo" method="DELETE">
@@ -176,6 +180,8 @@ document.getElementById('borrarEquipo').addEventListener('submit', function(even
 });
 </script>
 
+
+<!-- UPDATE -->
 <div class="container">
     <h2>Actualizar equipo</h2>
     <form id="actualizarEquipo">
@@ -206,9 +212,9 @@ document.getElementById('actualizarEquipo').addEventListener('submit', function(
     var division = document.getElementById('divisionActualizar').value;
     var color = document.getElementById('colorActualizar').value;
     var redes = document.getElementById('redesActualizar').value;
-    
+
     var equipo = {};
-    
+
     if (nombre) equipo.nombre = nombre;
     if (ciudad) equipo.ciudad = ciudad;
     if (division) equipo.division = division;

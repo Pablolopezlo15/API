@@ -235,22 +235,30 @@ class UsuarioRepository {
 
     public function verificarFechaExpiracion($token){
 
-        $sql = "SELECT token_exp FROM usuarios WHERE token = :token";
+        $sql = "SELECT * FROM usuarios WHERE token = :token";
         $stmt = $this->db->prepara($sql);
         $stmt->bindParam(':token', $token, PDO::PARAM_STR);
         $stmt->execute();
-        $fecha = $stmt->fetch(PDO::FETCH_ASSOC);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
         $this->db->close();
 
-        // var_dump($fecha);
-        // die();
+        $decodeToken = Security::decodeToken($token);
 
-        if ($fecha == false){
+        $data = $decodeToken->data;
+        $id = $data[0];
+        $nombre = $data[1];
+        $email = $data[2];
+        $rol = $data[3];
+
+        if ($user == false){
             return false;
         }
-        else if ($fecha['token_exp'] < date('Y-m-d H:i:s')){
+        else if ($user['token_exp'] < date('Y-m-d H:i:s')){
             return false;
-        } else {
+        } else if($user['id'] != $id || $user['nombre'] != $nombre || $user['email'] != $email || $user['rol'] != $rol){
+            return false;
+        }
+        else {
             return true;
         }
 

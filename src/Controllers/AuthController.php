@@ -30,7 +30,6 @@ class AuthController{
         else{
             $this->expirarToken($token, $this->db);
             return false;
-
         }
     }
 

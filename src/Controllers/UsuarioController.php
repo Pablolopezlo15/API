@@ -133,6 +133,11 @@ class UsuarioController {
         return $fecha;
     }
 
+    public function validarDatosToken($token){
+        $datos = $this->usuarioService->validarDatosToken($token);
+        return $datos;
+    }
+
     public function obtenerToken($id){
         return $this->usuarioService->obtenerToken($id);
     }

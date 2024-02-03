@@ -22,15 +22,6 @@
         <label for="apellidos">Apellidos</label>
         <input type="text" name="data[apellidos]" id="apellidos" required>
     
-        <?php if(isset($_SESSION['login'])) :?>
-            <?php if($_SESSION['login']->rol == 'admin'): ?>
-                <label for="rol">Rol</label>
-                <select name="data[rol]" id="rol">
-                    <option value="admin">Administrador</option>
-                    <option value="user">Usuario</option>
-                </select>
-            <?php endif;?>
-        <?php endif;?>
         <label for="email">Email</label>
         <input type="text" name="data[email]" id="email" required>
             

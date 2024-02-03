@@ -21,6 +21,10 @@ class UsuarioService {
         return $this->usuarioRepository->verificarFechaExpiracion($token);
     }
 
+    public function validarDatosToken($token){
+        return $this->usuarioRepository->validarDatosToken($token);
+    }
+
     public function obtenerToken($id){
         return $this->usuarioRepository->obtenerToken($id);
     }

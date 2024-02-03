@@ -86,23 +86,6 @@ class Security {
         }
     }
 
-    // final public static function getToken() {
-    //     $headers = apache_request_headers();
-    //     if (!isset($headers['Authorization'])) {
-
-    //         return $response['message'] = json_decode( ResponseHttp::statusMessage(403, 'Acceso denegado'));
-    //     }
-    //     try {
-    //         $authorizationArray = explode(' ', $headers['Authorization']);
-    //         $token = $authorizationArray[1];
-    //         $decodeToken = JWT::decode($token,new Key(Security::clavesecreta(), 'HS256'));
-    //         return $decodeToken;
-
-    //     } catch (PDOException $exception) {
-    //         return $response['message'] = json_decode( ResponseHttp::statusMessage(401, 'Token expirado o invalido'));
-    //     }
-    // }
-
     final public static function getToken() {
         $headers = apache_request_headers();
         if (!isset($headers['Authorization'])) {
