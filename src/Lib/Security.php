@@ -90,7 +90,7 @@ class Security {
         $headers = apache_request_headers();
         if (!isset($headers['Authorization'])) {
             $response = ResponseHttp::statusMessage(403, 'Acceso denegado.');
-            echo json_encode($response);
+            echo json_encode($response, JSON_PRETTY_PRINT);
             exit();
         }
         try {
@@ -99,11 +99,11 @@ class Security {
             return $token;
         } catch (ExpiredException $expiredException) {
             $response = ResponseHttp::statusMessage(401, 'Token expirado');
-            echo json_encode($response);
+            echo json_encode($response, JSON_PRETTY_PRINT);
             exit();
         } catch (PDOException $exception) {
             $response = ResponseHttp::statusMessage(401, 'Token invalido');
-            echo json_encode($response);
+            echo json_encode($response, JSON_PRETTY_PRINT);
             exit();
         }
     }

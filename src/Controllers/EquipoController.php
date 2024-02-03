@@ -21,13 +21,14 @@ class EquipoController {
         $this->equipo = new Equipo();
     }
 
+    // Crear un nuevo equipo
     public function crearEquipo($data) {
 
         $fecha = $this->authController->verificarToken();
 
         if ($fecha){
             $response = ResponseHttp::statusMessage(401, 'El token ha expirado.');
-            echo json_encode($response);
+            echo json_encode($response, JSON_PRETTY_PRINT);
             exit();
         }
 
@@ -46,7 +47,7 @@ class EquipoController {
         // Validar que los datos necesarios estén presentes
         if (empty($nombre) || empty($ciudad) || empty($division) || empty($color) || empty($redes)) {
             $response = ResponseHttp::statusMessage(400, 'Todos los campos son obligatorios.');
-            echo json_encode($response);
+            echo json_encode($response, JSON_PRETTY_PRINT);
             exit();
         }
 
@@ -56,22 +57,23 @@ class EquipoController {
         // Intentar crear el equipo en la base de datos
         if ($equipo->create()) {
             $response = ResponseHttp::statusMessage(201, 'Equipo creado correctamente.');
-            echo json_encode($response);
+            echo json_encode($response, JSON_PRETTY_PRINT);
             exit();
         } else {
             $response = ResponseHttp::statusMessage(500, 'Error al crear el equipo.');
-            echo json_encode($response);
+            echo json_encode($response, JSON_PRETTY_PRINT);
             exit();
         }
     }
 
+    // Leer todos los equipos
     public function read(){
 
         $fecha = $this->authController->verificarToken();
 
         if ($fecha){
             $response = ResponseHttp::statusMessage(401, 'El token ha expirado.');
-            echo json_encode($response);
+            echo json_encode($response, JSON_PRETTY_PRINT);
             exit();
         }
 
@@ -87,13 +89,13 @@ class EquipoController {
                 array_push($equiposArr['equipos'], $fila);
             }
             $response = ResponseHttp::statusMessage(202, 'Equipos obtenidos correctamente.');
-            // Merge the status message and the equipos into one array
+
             $response = array_merge($response, $equiposArr);
-            echo json_encode($response);
+            echo json_encode($response, JSON_PRETTY_PRINT);
         }
         else {
             $response = ResponseHttp::statusMessage(500, 'Error al obtener los equipos.');
-            echo json_encode($response);
+            echo json_encode($response, JSON_PRETTY_PRINT);
             exit();
         }
     }
@@ -104,7 +106,7 @@ class EquipoController {
 
         if ($fecha){
             $response = ResponseHttp::statusMessage(401, 'El token ha expirado.');
-            echo json_encode($response);
+            echo json_encode($response, JSON_PRETTY_PRINT);
             exit();
         }
 
@@ -114,12 +116,13 @@ class EquipoController {
         
         if ($equipo) {
             $response = ResponseHttp::statusMessage(202, 'Equipo obtenido correctamente.');
-            echo json_encode($equipo);
+            $response = array_merge($response, $equipo);
+            echo json_encode($response, JSON_PRETTY_PRINT);
     
             exit();
         } else {
             $response = ResponseHttp::statusMessage(500, 'Error al obtener el equipo.');
-            echo json_encode($response);
+            echo json_encode($response, JSON_PRETTY_PRINT);
     
             exit();
         }
@@ -131,7 +134,7 @@ class EquipoController {
 
         if ($fecha){
             $response = ResponseHttp::statusMessage(401, 'El token ha expirado.');
-            echo json_encode($response);
+            echo json_encode($response, JSON_PRETTY_PRINT);
             exit();
         }
         
@@ -140,11 +143,11 @@ class EquipoController {
 
         if ($equipo > 0) {
             $response = ResponseHttp::statusMessage(202, 'Equipo eliminado correctamente.');
-            echo json_encode($response);
+            echo json_encode($response, JSON_PRETTY_PRINT);
             exit();
         } else {
-            $response = ResponseHttp::statusMessage(500, 'Error al eliminar el equipo.');
-            echo json_encode($response);
+            $response = ResponseHttp::statusMessage(500, 'Equipo no encontrado.');
+            echo json_encode($response, JSON_PRETTY_PRINT);
             exit();
         }
     }
@@ -155,7 +158,7 @@ class EquipoController {
 
         if ($fecha){
             $response = ResponseHttp::statusMessage(401, 'El token ha expirado.');
-            echo json_encode($response);
+            echo json_encode($response, JSON_PRETTY_PRINT);
             exit();
         }
 
@@ -164,7 +167,7 @@ class EquipoController {
 
         if (!$equipoExistente) {
             $response = ResponseHttp::statusMessage(404, 'Equipo no encontrado.');
-            echo json_encode($response);
+            echo json_encode($response, JSON_PRETTY_PRINT);
             exit();
         }
 
@@ -182,15 +185,19 @@ class EquipoController {
 
         // Crear un objeto Equipo
         $equipo = new Equipo($id, $nombre, $ciudad, $division, $color, $redes);
+        // Crear un array con los datos del equipo
+        $equipoArr = array("id" => $id, "nombre" => $nombre, "ciudad" => $ciudad, "division" => $division, "color" => $color, "redes" => $redes);
+        
 
         // Intentar actualizar el equipo en la base de datos
         if ($equipo->update()) {
             $response = ResponseHttp::statusMessage(202, 'Equipo actualizado correctamente.');
-            echo json_encode($response);
+            $response = array_merge($response, $equipoArr);
+            echo json_encode($response, JSON_PRETTY_PRINT);
             exit();
         } else {
             $response = ResponseHttp::statusMessage(500, 'Error al actualizar el equipo.');
-            echo json_encode($response);
+            echo json_encode($response, JSON_PRETTY_PRINT);
             exit();
         }
     }

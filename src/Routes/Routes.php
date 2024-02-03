@@ -63,7 +63,6 @@ class Routes {
         Router::add('GET', '/usuario/ConfirmarCuenta/{token}', function($token) {
             return (new UsuarioController())->confirmarCuenta($token);
         });
-        
 
         Router::add('GET', '/auth/nuevoToken', function() {
             return (new AuthController())->crearNuevoToken();
@@ -71,10 +70,6 @@ class Routes {
 
         Router::add('GET', '/peticiones', function() {
             return (new DashboardController())->peticiones();
-        });
-
-        Router::add('GET', '/prueba', function() {
-            return (new AuthController())->pruebas();
         });
 
         Router::add('GET', '/error', function() {

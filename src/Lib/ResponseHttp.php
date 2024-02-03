@@ -26,17 +26,6 @@ class ResponseHttp {
         return $status[$code] ?? $status[500];
     }
 
-    // final public static function statusMessage(int $status, string $res) {
-    //     http_response_code($status);
-
-    //     $mensaje = [
-    //         "status" => self::getStatusMessage($status),
-    //         "message" => $res
-    //     ];
-
-    //     return json_encode($mensaje);
-    // }
-
     public static function statusMessage($status, $message) {
         // Devuelve un array en lugar de una cadena JSON
         return array("status" => $status, "message" => $message);

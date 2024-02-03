@@ -242,25 +242,28 @@ class UsuarioRepository {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         $this->db->close();
 
-        $decodeToken = Security::decodeToken($token);
-
-        $data = $decodeToken->data;
-        $id = $data[0];
-        $nombre = $data[1];
-        $email = $data[2];
-        $rol = $data[3];
 
         if ($user == false){
             return false;
         }
         else if ($user['token_exp'] < date('Y-m-d H:i:s')){
             return false;
-        } else if($user['id'] != $id || $user['nombre'] != $nombre || $user['email'] != $email || $user['rol'] != $rol){
-            return false;
+        } else{
+            $decodeToken = Security::decodeToken($token);
+
+            $data = $decodeToken->data;
+            $id = $data[0];
+            $nombre = $data[1];
+            $email = $data[2];
+            $rol = $data[3];
+            
+            if ($user['id'] == $id && $user['nombre'] == $nombre && $user['email'] == $email && $user['rol'] == $rol){
+                return true;
+            } else {
+                return false;
+            }
         }
-        else {
-            return true;
-        }
+
 
     }
 
