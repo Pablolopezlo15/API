@@ -20,6 +20,7 @@ class AuthController{
 
     public function verificarToken(){
         $token = $this->security->getToken();
+
         $expirado = $this->usuarioController->verificarFechaExpiracion($token);
 
         if (!$expirado){

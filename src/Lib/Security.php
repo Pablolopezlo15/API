@@ -106,16 +106,22 @@ class Security {
     final public static function getToken() {
         $headers = apache_request_headers();
         if (!isset($headers['Authorization'])) {
-            return json_encode(['message' => ResponseHttp::statusMessage(403, 'Acceso denegado')]);
+            $response = ResponseHttp::statusMessage(403, 'Acceso denegado.');
+            echo json_encode($response);
+            exit();
         }
         try {
             $authorizationArray = explode(' ', $headers['Authorization']);
             $token = $authorizationArray[1];
             return $token;
         } catch (ExpiredException $expiredException) {
-            return json_encode(['message' => ResponseHttp::statusMessage(401, 'Token expirado')]);
+            $response = ResponseHttp::statusMessage(401, 'Token expirado');
+            echo json_encode($response);
+            exit();
         } catch (PDOException $exception) {
-            return json_encode(['message' => ResponseHttp::statusMessage(401, 'Token invalido')]);
+            $response = ResponseHttp::statusMessage(401, 'Token invalido');
+            echo json_encode($response);
+            exit();
         }
     }
 

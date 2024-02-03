@@ -234,6 +234,7 @@ class UsuarioRepository {
     }
 
     public function verificarFechaExpiracion($token){
+
         $sql = "SELECT token_exp FROM usuarios WHERE token = :token";
         $stmt = $this->db->prepara($sql);
         $stmt->bindParam(':token', $token, PDO::PARAM_STR);
