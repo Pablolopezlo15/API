@@ -1,8 +1,14 @@
 <?php
-
+use Controllers\UsuarioController;
+$usuarioController = new UsuarioController();
 if (!isset($_SESSION['login'])) {
     header('Location: ' . BASE_URL . 'usuario/login');
 }
+$id = $_SESSION['login']->id;
+$tokenInfo = $usuarioController->obtenerToken($id);
+$token = $tokenInfo['token'];
+// $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDY5MDkzNDEsImV4cCI6MTcwNjkxMTE0MSwiZGF0YSI6WzEsIlBhYmxvIiwicGxvcGV6bG96YW5vMTJAZ21haWwuY29tIiwidXNlciIsMV19.279XegKeOHwcI-QjC_Y-223wt_R4a5Ene3omeKCCBUU";
+
 
 ?>
 <!DOCTYPE html>
@@ -16,96 +22,117 @@ if (!isset($_SESSION['login'])) {
 <body>
 
 <div class="container">
-    <h2>Obtener Ponentes</h2>
-    <button id="getPonentes" class="btn">Obtener ponentes</button>
-    <p><strong class="success">GET</strong>/ponente</p>
-    <div id="ponentes" class="result-container"></div>
+    <p>Token: <?php echo $token; ?></p>
+</div>
+
+<div class="container">
+
+    <h2>Obtener Equipos</h2>
+    <button id="getEquipos" class="btn">Obtener Equipos</button>
+    <p><strong class="success">GET</strong>/equipo</p>
+    <div id="equipos" class="result-container"></div>
 </div>
 
 <script>
-document.getElementById('getPonentes').addEventListener('click', function() {
-    TOKEN = "<?= $_SESSION['login']->token ?>";
-    console.log(TOKEN);
-    fetch('http://localhost/API/ponente', {
+document.getElementById('getEquipos').addEventListener('click', function() {
+    TOKEN = "<?php echo $token; ?>";
+    fetch('http://localhost/API/equipo', {
   headers: {
-    'Authorization': 'Bearer ' + TOKEN
+    'Authorization': 'Bearer ' + TOKEN,
+    'Content-Type': 'application/json'
+
   }
 })
     .then(response => {return response.json();})
     .then(data => {
-        document.getElementById('ponentes').innerText = JSON.stringify(data, null, 2);
+        document.getElementById('equipos').innerText = JSON.stringify(data, null, 2);
     })
     .catch(error => console.error('Error:', error));
 });
 </script>
 <div class="container">
-    <h2>Buscar Ponente</h2>
-    <form id="buscarPonente" method="GET" action="<?= BASE_URL ?>peticiones" class="search-form">
-        <label for="id" class="label">ID del ponente:</label>
+    <h2>Buscar Equipos</h2>
+    <form id="buscarEquipos" method="GET" action="<?= BASE_URL ?>peticiones" class="search-form">
+        <label for="id" class="label">ID del equipo:</label>
         <input type="text" id="id" name="id" class="input">
-        <input type="submit" value="Buscar ponente" class="btn">
+        <input type="submit" value="Buscar equipo" class="btn">
     </form>
-    <p><strong class="success">GET</strong>/ponente/{id}</p>
-    <div id="ponente" class="result-container"></div>
+    <p><strong class="success">GET</strong>/equipo/{id}</p>
+    <div id="equipo" class="result-container"></div>
+    
 </div>
 
-
 <script>
-document.getElementById('buscarPonente').addEventListener('submit', function(event) {
+document.getElementById('buscarEquipos').addEventListener('submit', function(event) {
     event.preventDefault();
-    var id = document.getElementById('id').value;
-    TOKEN = "<?= $_SESSION['login']->token ?>";
 
-    fetch('http://localhost/API/ponente/' + id, {
+    var id = document.getElementById('id').value;
+    TOKEN = "<?php echo $token; ?>";
+
+    fetch('http://localhost/API/equipo/' + id, {
       headers: {
-        'Authorization': 'Bearer' + TOKEN
+        'Authorization': 'Bearer ' + TOKEN,
+        'Content-Type': 'application/json'
       }
     })
         .then(response => response.json())
         .then(data => {
-            document.getElementById('ponente').innerText = JSON.stringify(data, null, 2);
+            document.getElementById('equipo').innerText = JSON.stringify(data, null, 2);
         })
         .catch(error => console.error('Error:', error));
 });
 </script>
 
 <div class="container">
-    <h2>Crear Ponente</h2>
-    <form id="crearPonente">
+    <h2>Crear equipo</h2>
+    <form id="crearEquipo">
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" name="nombre">
-        <label for="apellido">Apellidos:</label>
-        <input type="text" id="apellidos" name="apellido">
-        <label for="imagen">Imagen</label>
-        <input type="text" id="imagen" name="imagen">
-        <label for="tags">Tags</label>
-        <input type="text" id="tags" name="tags">
+        <label for="ciudad">Ciudad:</label>
+        <input type="text" id="ciudad" name="ciudad">
+        <label for="division">Division</label>
+        <input type="text" id="division" name="division">
+        <label for="color">Color</label>
+        <input type="text" id="color" name="color">
         <label for="redes">Redes</label>
         <input type="text" id="redes" name="redes">
 
         <input type="submit" value="Crear">
     </form>
-    <p><strong class="success">POST</strong>/ponente</p>
+    <p><strong class="success">POST</strong>/equipo</p>
     <div id="resultadoCrear" class="result-container"></div>
 </div>
 
 <script>
-    document.getElementById('crearPonente').addEventListener('submit', function(event) {
+    
+    document.getElementById('crearEquipo').addEventListener('submit', function(event) {
     event.preventDefault();
+    var id = document.getElementById('id').value;
+    TOKEN = "<?php echo $token; ?>";
+
     var nombre = document.getElementById('nombre').value;
-    var apellido = document.getElementById('apellidos').value;
-    var imagen = document.getElementById('imagen').value;
-    var tags = document.getElementById('tags').value;
+    var ciudad = document.getElementById('ciudad').value;
+    var division = document.getElementById('division').value;
+    var color = document.getElementById('color').value;
     var redes = document.getElementById('redes').value;
 
-    var ponente = {nombre: nombre, apellidos: apellidos, imagen: imagen, tags: tags, redes: redes};
-    fetch('http://localhost/API/ponente', {
+    var equipo = {
+        nombre: nombre,
+        ciudad: ciudad,
+        division: division,
+        color: color,
+        redes: redes
+    };
+
+    TOKEN = "<?php echo $token; ?>";
+
+    fetch('http://localhost/API/equipo', {
         method: 'POST',
         headers: {
-            'Authorization': 'Bearer ' + TOKEN, // 'Bearer ' + token
+            'Authorization': 'Bearer ' + TOKEN,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(ponente),
+        body: JSON.stringify(equipo),
     })
     .then(response => response.json())
     .then(data => {
@@ -117,21 +144,30 @@ document.getElementById('buscarPonente').addEventListener('submit', function(eve
 
 
 <div class="container">
-    <h2>Borrar Ponente</h2>
-    <form id="borrarPonente" method="DELETE">
-        <label for="idBorrar">ID del Ponente:</label>
+    <h2>Borrar equipo</h2>
+    <form id="borrarEquipo" method="DELETE">
+        <label for="idBorrar">ID del Equipo:</label>
         <input type="text" id="idBorrar" name="idBorrar">
         <input type="submit" value="Borrar">
     </form>
-    <p><strong class="error">DELETE</strong>/ponente/{id}</p>
+    <p><strong class="error">DELETE</strong>/equipo/{id}</p>
     <div id="resultadoBorrar" class="result-container"></div>
 </div>
 
 <script>
-document.getElementById('borrarPonente').addEventListener('submit', function(event) {
+document.getElementById('borrarEquipo').addEventListener('submit', function(event) {
     event.preventDefault();
     var id = document.getElementById('idBorrar').value;
-    fetch('http://localhost/API/ponente/' + id, {method: 'DELETE'})
+    TOKEN = "<?php echo $token; ?>";
+
+    fetch('http://localhost/API/equipo/' + id, {
+        method: 'DELETE',         
+        headers: {
+            'Authorization': 'Bearer ' + TOKEN,
+            'Content-Type': 'application/json',
+        },
+    },
+    )
     .then(response => response.json())
     .then(data => {
         document.getElementById('resultadoBorrar').innerText = JSON.stringify(data, null, 2);

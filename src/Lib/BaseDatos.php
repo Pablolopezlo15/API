@@ -5,7 +5,7 @@ use PDOException;
 
 class BaseDatos{
     private $conexion;
-    private mixed $resultado; //mixed novedad en PHP cualquier valor
+    private mixed $resultado;
     private string $servidor;
     private string $usuario;
     private string $pass;
@@ -55,13 +55,13 @@ class BaseDatos{
         return $this->resultado->rowCount();
     }
 
-    public function close(){
-        if ($this->conexion !== null) {
-            $this->conexion = null;
-        }
+    public function close(): void
+    {
+        $this->conexion = null;
     }
-
-    public function prepara($pre){
+    
+    public function prepara($pre)
+    {
         return $this->conexion->prepare($pre);
     }
 }

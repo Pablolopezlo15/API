@@ -3,7 +3,7 @@ namespace Routes;
 
 use Controllers\DashboardController;
 use Controllers\ErrorController;
-use Controllers\PonenteController;
+use Controllers\EquipoController;
 use Controllers\AuthController;
 use Controllers\UsuarioController;
 use Lib\Router;
@@ -15,28 +15,29 @@ class Routes {
             return (new DashboardController())->index();
         });
 
-        Router::add('GET', '/ponente', function() {
-            return (new PonenteController())->read();
+        Router::add('GET', '/equipo', function() {
+            return (new EquipoController())->read();
         });
 
-        Router::add('POST', '/ponente', function() {
-            return (new PonenteController())->crearPonente($_POST);
+        Router::add('POST', '/equipo', function() {
+   
+            return (new EquipoController())->crearEquipo($_POST);
         });
 
-        Router::add('POST', '/ponente/{id}', function($id) {
-            return (new PonenteController())->buscarPonente($id);
+        Router::add('POST', '/equipo/{id}', function($id) {
+            return (new EquipoController())->buscarEquipo($id);
         });
 
-        Router::add('GET', '/ponente/{id}', function($id) {
-            return (new PonenteController())->buscarPonente($id);
+        Router::add('GET', '/equipo/{id}', function($id) {
+            return (new EquipoController())->buscarEquipo($id);
         });
 
-        Router::add('DELETE', '/ponente/{id}', function($id) {
-            return (new PonenteController())->delete($id);
+        Router::add('DELETE', '/equipo/{id}', function($id) {
+            return (new EquipoController())->delete($id);
         });
 
-        // Router::add('PUT', '/ponente/{id}', function($id) {
-        //     return (new PonenteController())->update($id, $_POST);
+        // Router::add('PUT', '/equipo/{id}', function($id) {
+        //     return (new EquipoController())->update($id, $_POST);
         // });
 
         Router::add('GET', '/usuario/registro', function() {

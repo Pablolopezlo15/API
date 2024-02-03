@@ -3,27 +3,34 @@ namespace Controllers;
 use Lib\Security;
 use Lib\Pages;
 use Controllers\UsuarioController;
+use Lib\BaseDatos;
 
 class AuthController{
 
     private Security $security;
     private UsuarioController $usuarioController;
+    private BaseDatos $db;
 
     public function __construct(){
         $this->security = new Security();
         $this->usuarioController = new UsuarioController();
+        $this->db = new BaseDatos();
     }
-    public function pruebas(){
-        // $passw = $this->security->encriptarPass('1234');
-        // $passw = $this->security->clavesecreta();
-        // $passw = $this->security->crearToken('1234', ['id' => 1, 'name' => 'pepe']);
-        $passw = $this->security->getToken();
-        var_dump($passw);
-    }
+
 
     public function verificarToken(){
         $token = $this->security->getToken();
-        var_dump($token);
+        $expirado = $this->usuarioController->verificarFechaExpiracion($token);
+
+        if (!$expirado){
+            return true;
+            exit();
+        }
+        else{
+            $this->expirarToken($token, $this->db);
+            return false;
+
+        }
     }
 
     public function crearNuevoToken(){
@@ -43,8 +50,8 @@ class AuthController{
 
     }
 
-    public function expirarToken(){
-        $this->security->expirarToken();
+    public function expirarToken($token, $db){
+        $this->security->expirarToken($token, $db);
     }
     
 }

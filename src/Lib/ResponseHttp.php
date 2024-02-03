@@ -26,21 +26,26 @@ class ResponseHttp {
         return $status[$code] ?? $status[500];
     }
 
-    final public static function statusMessage(int $status, string $res) {
-        http_response_code($status);
+    // final public static function statusMessage(int $status, string $res) {
+    //     http_response_code($status);
 
-        $mensaje = [
-            "status" => self::getStatusMessage($status),
-            "message" => $res
-        ];
+    //     $mensaje = [
+    //         "status" => self::getStatusMessage($status),
+    //         "message" => $res
+    //     ];
 
-        return json_encode($mensaje);
+    //     return json_encode($mensaje);
+    // }
+
+    public static function statusMessage($status, $message) {
+        // Devuelve un array en lugar de una cadena JSON
+        return array("status" => $status, "message" => $message);
     }
 
     public static function setHeaders(): void {
         header('Access-Control-Allow-Origin: *');
         header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
         header('Access-Control-Allow-Headers: Content-Type');
-        header('Content-Type: application/json');
+        header('Content-Type: application/json; charset=utf-8');
     }
 }

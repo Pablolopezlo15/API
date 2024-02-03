@@ -128,6 +128,15 @@ class UsuarioController {
         $this->usuarioService->updateToken($id, $token);
     }
 
+    public function verificarFechaExpiracion($token){
+        $fecha = $this->usuarioService->verificarFechaExpiracion($token);
+        return $fecha;
+    }
+
+    public function obtenerToken($id){
+        return $this->usuarioService->obtenerToken($id);
+    }
+
     // Método para iniciar sesión
     public function login(){
         if (($_SERVER['REQUEST_METHOD']) === 'POST'){

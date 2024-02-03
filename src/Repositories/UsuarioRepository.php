@@ -233,4 +233,47 @@ class UsuarioRepository {
         return $usuario;
     }
 
+    public function verificarFechaExpiracion($token){
+        $sql = "SELECT token_exp FROM usuarios WHERE token = :token";
+        $stmt = $this->db->prepara($sql);
+        $stmt->bindParam(':token', $token, PDO::PARAM_STR);
+        $stmt->execute();
+        $fecha = $stmt->fetch(PDO::FETCH_ASSOC);
+        $this->db->close();
+
+        // var_dump($fecha);
+        // die();
+
+        if ($fecha == false){
+            return false;
+        }
+        else if ($fecha['token_exp'] < date('Y-m-d H:i:s')){
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    public function obtenerToken($id){
+        $sql = "SELECT token FROM usuarios WHERE id = :id";
+        $stmt = $this->db->prepara($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_STR);
+        $stmt->execute();
+        $token = $stmt->fetch(PDO::FETCH_ASSOC);
+        $this->db->close();
+        return $token;
+    }
+
+    public function expirarToken($token){
+        $sql = "UPDATE usuarios SET token_exp = :now WHERE token = :token";
+        $stmt = $this->db->prepara($sql);
+        $stmt->bindParam(':token', $token, PDO::PARAM_STR);
+        $stmt->bindParam(':now', date('Y-m-d H:i:s'), PDO::PARAM_STR);
+        $stmt->execute();
+        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+        $this->db->close();
+
+    }
+
 }
