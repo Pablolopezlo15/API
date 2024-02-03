@@ -83,7 +83,6 @@ class Equipo {
         ];
     }
 
-
     public function create(): bool {
         try {
             $sql = $this->db->prepara("INSERT INTO equipos (nombre, ciudad, division, color, redes) VALUES (:nombre, :ciudad, :division, :color, :redes)");
@@ -122,10 +121,12 @@ class Equipo {
         $sql->bindValue(':color', $this->color);
         $sql->bindValue(':redes', $this->redes);
         $sql->execute();
+        $filasAfectadas = $sql->rowCount();
         $sql->closeCursor();
         
         $this->db->close();
-        return $this->db->filasAfectadas();
+        return $filasAfectadas > 0;
+
     }
 
     public function delete(): bool {
@@ -148,25 +149,15 @@ class Equipo {
         }
     }
 
-    // public function delete(): bool {
-    //     $sql = $this->db->prepara("DELETE FROM ponentes WHERE id = :id");
-    //     $sql->bindValue(':id', $this->id);
-    //     $sql->execute();
-    //     $sql->closeCursor();
-
-    //     $this->db->close();
-    //     return $this->db->filasAfectadas();
-    // }
-
     public function getById() {
         $sql = $this->db->prepara("SELECT * FROM equipos WHERE id = :id");
         $sql->bindValue(':id', $this->id);
         $sql->execute();
-        $ponente = $sql->fetch(PDO::FETCH_ASSOC);
+        $equipo = $sql->fetch(PDO::FETCH_ASSOC);
         $sql->closeCursor();
 
         $this->db->close();
-        return $ponente ?: null;
+        return $equipo ?: null;
     }
 
     public function obtenerFechaExpiracion($email) {

@@ -12,12 +12,15 @@ class EquipoController {
 
     private UsuarioService $usuarioService;
     private AuthController $authController;
+    private Equipo $equipo;
 
     public function __construct()
     {
         $this->authController = new AuthController();
         $this->usuarioService = new UsuarioService(new UsuarioRepository());
+        $this->equipo = new Equipo();
     }
+
     public function crearEquipo($data) {
 
         $fecha = $this->authController->verificarToken();
@@ -141,6 +144,52 @@ class EquipoController {
             exit();
         } else {
             $response = ResponseHttp::statusMessage(500, 'Error al eliminar el equipo.');
+            echo json_encode($response);
+            exit();
+        }
+    }
+
+    public function update($id, $data) {
+
+        $fecha = $this->authController->verificarToken();
+
+        if ($fecha){
+            $response = ResponseHttp::statusMessage(401, 'El token ha expirado.');
+            echo json_encode($response);
+            exit();
+        }
+
+        $equipoExistente = new Equipo($id, "", "", "", "", "");
+        $equipoExistente = $equipoExistente->getById();
+
+        if (!$equipoExistente) {
+            $response = ResponseHttp::statusMessage(404, 'Equipo no encontrado.');
+            echo json_encode($response);
+            exit();
+        }
+
+        // Obtener el contenido JSON del cuerpo de la solicitud
+        $json = file_get_contents('php://input');
+
+        // Decodificar el JSON a un array asociativo
+        $data = json_decode($json, true);
+
+        $nombre = $data['nombre'] ?? $equipoExistente['nombre'];
+        $ciudad = $data['ciudad'] ?? $equipoExistente['ciudad'];
+        $division = $data['division'] ?? $equipoExistente['division'];
+        $color = $data['color'] ?? $equipoExistente['color'];
+        $redes = $data['redes'] ?? $equipoExistente['redes'];
+
+        // Crear un objeto Equipo
+        $equipo = new Equipo($id, $nombre, $ciudad, $division, $color, $redes);
+
+        // Intentar actualizar el equipo en la base de datos
+        if ($equipo->update()) {
+            $response = ResponseHttp::statusMessage(202, 'Equipo actualizado correctamente.');
+            echo json_encode($response);
+            exit();
+        } else {
+            $response = ResponseHttp::statusMessage(500, 'Error al actualizar el equipo.');
             echo json_encode($response);
             exit();
         }

@@ -176,5 +176,62 @@ document.getElementById('borrarEquipo').addEventListener('submit', function(even
 });
 </script>
 
+<div class="container">
+    <h2>Actualizar equipo</h2>
+    <form id="actualizarEquipo">
+        <label for="idActualizar">ID del Equipo:</label>
+        <input type="text" id="idActualizar" name="idActualizar">
+        <label for="nombreActualizar">Nombre:</label>
+        <input type="text" id="nombreActualizar" name="nombreActualizar">
+        <label for="ciudadActualizar">Ciudad:</label>
+        <input type="text" id="ciudadActualizar" name="ciudadActualizar">
+        <label for="divisionActualizar">Division</label>
+        <input type="text" id="divisionActualizar" name="divisionActualizar">
+        <label for="colorActualizar">Color</label>
+        <input type="text" id="colorActualizar" name="colorActualizar">
+        <label for="redesActualizar">Redes</label>
+        <input type="text" id="redesActualizar" name="redesActualizar">
+        <input type="submit" value="Actualizar">
+    </form>
+    <p><strong class="success">PUT</strong>/equipo/{id}</p>
+    <div id="resultadoActualizar" class="result-container"></div>
+</div>
+
+<script>
+document.getElementById('actualizarEquipo').addEventListener('submit', function(event) {
+    event.preventDefault();
+    var id = document.getElementById('idActualizar').value;
+    var nombre = document.getElementById('nombreActualizar').value;
+    var ciudad = document.getElementById('ciudadActualizar').value;
+    var division = document.getElementById('divisionActualizar').value;
+    var color = document.getElementById('colorActualizar').value;
+    var redes = document.getElementById('redesActualizar').value;
+    
+    var equipo = {};
+    
+    if (nombre) equipo.nombre = nombre;
+    if (ciudad) equipo.ciudad = ciudad;
+    if (division) equipo.division = division;
+    if (color) equipo.color = color;
+    if (redes) equipo.redes = redes;
+
+    TOKEN = "<?php echo $token; ?>";
+
+    fetch('http://localhost/API/equipo/' + id, {
+        method: 'PUT',
+        headers: {
+            'Authorization': 'Bearer ' + TOKEN,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(equipo),
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('resultadoActualizar').innerText = JSON.stringify(data, null, 2);
+    })
+    .catch(error => console.error('Error:', error));
+});
+</script>
+
 </body>
 </html>

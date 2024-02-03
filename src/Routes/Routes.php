@@ -36,9 +36,9 @@ class Routes {
             return (new EquipoController())->delete($id);
         });
 
-        // Router::add('PUT', '/equipo/{id}', function($id) {
-        //     return (new EquipoController())->update($id, $_POST);
-        // });
+        Router::add('PUT', '/equipo/{id}', function($id) {
+            return (new EquipoController())->update($id, $_POST);
+        });
 
         Router::add('GET', '/usuario/registro', function() {
             return (new UsuarioController())->registro();
