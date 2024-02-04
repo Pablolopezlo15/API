@@ -5,8 +5,21 @@ use Lib\Pages;
 use Controllers\UsuarioController;
 use Lib\BaseDatos;
 
+/**
+ * Clase AuthController
+ * 
+ * Esta clase se encarga de manejar la autenticación de los usuarios
+ * 
+ * @package Controllers
+ */
+
 class AuthController{
 
+    /**
+     * @var Security $security
+     * @var UsuarioController $usuarioController
+     * @var BaseDatos $db
+     */
     private Security $security;
     private UsuarioController $usuarioController;
     private BaseDatos $db;
@@ -17,6 +30,11 @@ class AuthController{
         $this->db = new BaseDatos();
     }
 
+    /**
+     * Función que se encarga de verificar si el token es válido
+     * 
+     * @return bool
+     */
 
     public function verificarToken(){
         $token = $this->security->getToken();
@@ -33,6 +51,11 @@ class AuthController{
         }
     }
 
+    /**
+     * Función que se encarga de crear un nuevo token
+     * 
+     * @return bool
+     */
     public function crearNuevoToken(){
         $data = [];
         $id = $_SESSION['login']->id;
@@ -49,6 +72,13 @@ class AuthController{
         header('Location:  '.BASE_URL.'peticiones');
 
     }
+
+    /**
+     * Función que se encarga de expirar un token
+     * 
+     * @param string $token
+     * @param BaseDatos $db
+     */
 
     public function expirarToken($token, $db){
         $this->security->expirarToken($token, $db);

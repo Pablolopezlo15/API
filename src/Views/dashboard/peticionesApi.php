@@ -20,8 +20,8 @@ $token = $tokenInfo['token'];
 </head>
 <body>
 
-<div class="container">
-    <p>Token: <?php echo $token; ?></p>
+<div class="container-token container">
+    <p>Tu Token actual: <?php echo $token; ?></p>
 </div>
 
 <!-- READ -->

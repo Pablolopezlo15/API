@@ -123,3 +123,15 @@ form {
     cursor: pointer;
     font-size: var(--font-size-pequeño);
   }
+
+  .container-token {
+    width: 80vw;
+    display: flex;
+    justify-items: center;
+
+  }
+
+  .container-token p {
+    width: 100%;
+    word-wrap: break-word;
+  }

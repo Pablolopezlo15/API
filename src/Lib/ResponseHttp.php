@@ -4,6 +4,12 @@ namespace Lib;
 
 class ResponseHttp {
     
+    /**
+     * Función que se encarga de devolver el mensaje correspondiente al código de estado
+     * 
+     * @param int $code
+     * @return string
+     */
     public static function getStatusMessage($code) {
         $status = [
             200 => 'OK',
@@ -26,11 +32,23 @@ class ResponseHttp {
         return $status[$code] ?? $status[500];
     }
 
+    /**
+     * Función que se encarga de devolver un mensaje en formato JSON
+     * 
+     * @param int $status
+     * @param string $message
+     * @return string
+     */
     public static function statusMessage($status, $message) {
         // Devuelve un array en lugar de una cadena JSON
         return array("status" => $status, "message" => $message);
     }
 
+    /**
+     * Función que se encarga de establecer los encabezados de la respuesta
+     * 
+     * @return void
+     */
     public static function setHeaders(): void {
         header('Access-Control-Allow-Origin: *');
         header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');

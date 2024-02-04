@@ -7,6 +7,11 @@ use PDO;
 use PDOException;
 
 class UsuarioRepository {
+    /**
+     * @var BaseDatos $db
+     * @var Security $security
+     * @var Email $email
+     */
     private BaseDatos $db;
     private Security $security;
     private Email $email;
@@ -16,6 +21,13 @@ class UsuarioRepository {
             
     }
 
+    /**
+     * Función que se encarga de crear un nuevo usuario
+     * 
+     * @param Usuario $usuario
+     * 
+     * @return bool
+     */
     public function create($usuario): bool{
         $id = $usuario->getId();
         $nombre = $usuario->getNombre();
@@ -62,6 +74,11 @@ class UsuarioRepository {
         return $result;
     }
 
+    /**
+     * Función que se encarga de volver a mandar la confirmación
+     * 
+     * @param string $id
+     */
     public function volverAmandarConfirmacion($id){
         $email = $id;
 
@@ -90,6 +107,13 @@ class UsuarioRepository {
         header("Location:".BASE_URL."usuario/login");
     }
     
+    /**
+     * Función que se encarga de confirmar la cuenta
+     * 
+     * @param string $token
+     * 
+     * @return bool
+     */
     public function confirmarCuenta($token){
 
         $tokenDecode = Security::decodeToken($token);
@@ -121,6 +145,14 @@ class UsuarioRepository {
         }
     }
 
+    /**
+     * Función que se encarga de actualizar el token en la base de datos
+     * 
+     * @param int $id
+     * @param string $token
+     * 
+     * @return array
+     */
     public function updateToken($id, $token){
         $token_exp = date('Y-m-d H:i:s', strtotime('+30 minutes'));
 
@@ -136,13 +168,13 @@ class UsuarioRepository {
         return $usuario;
     }
 
-    public function verTodos(){
-        $sql = "SELECT * FROM usuarios";
-        $this->db->consulta($sql);
-        $this->db->close();
-        return $this->db->extraer_todos();
-    }
-
+    /**
+     * Función que se encarga de loguear al usuario
+     * 
+     * @param string $token
+     * 
+     * @return array
+     */
     public function login($usuario){
         $email = $usuario->getEmail();
         $password = $usuario->getPassword();
@@ -168,6 +200,13 @@ class UsuarioRepository {
         return $result;
     }
 
+    /**
+     * Función que se encarga de buscar un usuario por su email y comprobar si existe
+     * 
+     * @param string $token
+     * 
+     * @return array
+     */
     public function buscaMail($email){
         $select = $this->db->prepara("SELECT * FROM usuarios WHERE email=:email");
         $select->bindValue(':email', $email, PDO::PARAM_STR);
@@ -191,6 +230,13 @@ class UsuarioRepository {
         return $result;
     }
 
+    /**
+     * Función que se encarga de obtener un usuario por su id
+     * 
+     * @param string $id
+     * 
+     * @return bool
+     */
     public function getById($id){
         $sql = "SELECT * FROM usuarios WHERE id = :id";
         $stmt = $this->db->prepara($sql);
@@ -201,6 +247,13 @@ class UsuarioRepository {
         return $usuario;
     }
 
+    /**
+     * Función que se encarga de actualizar un usuario
+     * 
+     * @param string $token
+     * 
+     * @return array
+     */
     public function update($usuario){
         $id = $usuario->getId();
         $nombre = $usuario->getNombre();
@@ -208,8 +261,7 @@ class UsuarioRepository {
         $email = $usuario->getEmail();
         $rol = $usuario->getRol();
 
-        // var_dump($id, $nombre, $apellidos, $email, $rol);
-        // die();
+
         try {
             $ins = $this->db->prepara("UPDATE usuarios SET nombre=:nombre, apellidos=:apellidos, email=:email, rol=:rol WHERE id=:id");
 
@@ -232,6 +284,13 @@ class UsuarioRepository {
         return $result;
     }
 
+    /**
+     * Función que se encarga de eliminar un usuario
+     * 
+     * @param string $id
+     * 
+     * @return array
+     */
     public function delete($id){
         $sql = "DELETE FROM usuarios WHERE id = :id";
         $stmt = $this->db->prepara($sql);
@@ -242,6 +301,13 @@ class UsuarioRepository {
         return $usuario;
     }
 
+    /**
+     * Función que se encarga de validar la fecha de expiración del token
+     * 
+     * @param string $token
+     * 
+     * @return array
+     */
     public function verificarFechaExpiracion($token){
 
         $sql = "SELECT * FROM usuarios WHERE token = :token";
@@ -276,6 +342,13 @@ class UsuarioRepository {
 
     }
 
+    /**
+     * Función que se encarga de validar obtener los datos del token
+     * 
+     * @param string $token
+     * 
+     * @return array
+     */
     public function obtenerToken($id){
         $sql = "SELECT token FROM usuarios WHERE id = :id";
         $stmt = $this->db->prepara($sql);
@@ -286,6 +359,13 @@ class UsuarioRepository {
         return $token;
     }
 
+    /**
+     * Función que se encarga de expirar el token en la base de datos
+     * 
+     * @param string $token
+     * 
+     * @return array
+     */
     public function expirarToken($token){
         $sql = "UPDATE usuarios SET token_exp = :now WHERE token = :token";
         $stmt = $this->db->prepara($sql);

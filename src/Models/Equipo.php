@@ -7,6 +7,15 @@ use PDO;
 use PDOException;
 class Equipo {
 
+    /**
+     * @var int $id
+     * @var string $nombre
+     * @var string $ciudad
+     * @var string $division
+     * @var string $color
+     * @var string $redes
+     * @var BaseDatos $db
+     */
     private $id;
     private $nombre;
     private $ciudad;
@@ -23,6 +32,8 @@ class Equipo {
         $this->redes = $redes;
         $this->db = new BaseDatos();
     }
+
+    // Getters y setters
 
     public function getId() {
         return $this->id;
@@ -72,6 +83,11 @@ class Equipo {
         $this->redes = $redes;
     }
 
+    /**
+     * Función que se encarga de convertir el objeto a un array
+     * 
+     * @return array
+     */
     public function toArray(): array {
         return [
             'id' => $this->id,
@@ -83,6 +99,11 @@ class Equipo {
         ];
     }
 
+    /**
+     * Función que se encarga de crear un equipo
+     * 
+     * @return bool
+     */
     public function create(): bool {
         try {
             $sql = $this->db->prepara("INSERT INTO equipos (nombre, ciudad, division, color, redes) VALUES (:nombre, :ciudad, :division, :color, :redes)");
@@ -102,6 +123,11 @@ class Equipo {
         }
     }
 
+    /**
+     * Función que se encarga de obtener todos los equipos
+     * 
+     * @return array
+     */
     public function read() {
         $sql = $this->db->prepara("SELECT * FROM equipos");
         $sql->execute();
@@ -112,6 +138,11 @@ class Equipo {
         return $equipos;
     }
 
+    /**
+     * Función que se encarga de actualizar un equipo
+     * 
+     * @return bool
+     */
     public function update(): bool {
         $sql = $this->db->prepara("UPDATE equipos SET nombre = :nombre, ciudad = :ciudad, division = :division, color = :color, redes = :redes WHERE id = :id");
         $sql->bindValue(':id', $this->id);
@@ -129,6 +160,11 @@ class Equipo {
 
     }
 
+    /**
+     * Función que se encarga de eliminar un equipo
+     * 
+     * @return bool
+     */
     public function delete(): bool {
         try {
             $sql = $this->db->prepara("DELETE FROM equipos WHERE id = :id");
@@ -149,6 +185,11 @@ class Equipo {
         }
     }
 
+    /**
+     * Función que se encarga de obtener un equipo por su id
+     * 
+     * @return array|null
+     */
     public function getById() {
         $sql = $this->db->prepara("SELECT * FROM equipos WHERE id = :id");
         $sql->bindValue(':id', $this->id);
@@ -160,6 +201,12 @@ class Equipo {
         return $equipo ?: null;
     }
 
+    /**
+     * Función que se encarga de obtener la fecha de expiración del token
+     * 
+     * @param string $token
+     * @return mixed
+     */
     public function obtenerFechaExpiracion($email) {
         $sql = $this->db->prepara("SELECT token_exp FROM usuarios WHERE email = :email");
         $sql->bindValue(':email', $email);

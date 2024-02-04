@@ -10,6 +10,12 @@ use Repositories\UsuarioRepository;
 use Controllers\AuthController;
 class EquipoController {
 
+    /**
+     * @var UsuarioService $usuarioService
+     * @var AuthController $authController
+     * @var Equipo $equipo
+     */
+
     private UsuarioService $usuarioService;
     private AuthController $authController;
     private Equipo $equipo;
@@ -21,7 +27,12 @@ class EquipoController {
         $this->equipo = new Equipo();
     }
 
-    // Crear un nuevo equipo
+    /**
+     * Función que se encarga de crear un nuevo equipo
+     * 
+     * @param array $data
+     * @return void
+     */
     public function crearEquipo($data) {
 
         $fecha = $this->authController->verificarToken();
@@ -66,9 +77,13 @@ class EquipoController {
         }
     }
 
-    // Leer todos los equipos
+    /**
+     * Función que se encarga de obtener todos los equipos
+     * 
+     * @return void
+     */
     public function read(){
-
+        // Verificar si el token ha expirado
         $fecha = $this->authController->verificarToken();
 
         if ($fecha){
@@ -76,14 +91,15 @@ class EquipoController {
             echo json_encode($response, JSON_PRETTY_PRINT);
             exit();
         }
-
+        // Crear un objeto Equipo
         $equipo = new Equipo("","","","","","");
         $equipos = $equipo->read();
         $equipoCount = count($equipos);
+        // Crear un array con los equipos
         $equiposArr = array();
         $equiposArr['equipos'] = array();
 
-
+        // Verificar si se obtuvieron equipos
         if($equipoCount > 0){
             foreach($equipos as $fila) {
                 array_push($equiposArr['equipos'], $fila);
@@ -100,8 +116,15 @@ class EquipoController {
         }
     }
 
+
+    /**
+     * Función que se encarga de obtener un equipo por su id
+     * 
+     * @param int $id
+     * @return void
+     */
     public function buscarEquipo($id) {
-        
+        // Verificar si el token ha expirado
         $fecha = $this->authController->verificarToken();
 
         if ($fecha){
@@ -110,10 +133,11 @@ class EquipoController {
             exit();
         }
 
-    
+        // Crear un objeto Equipo
         $equipo = new Equipo($id, "", "", "", "", "");
         $equipo = $equipo->getById();
         
+        // Verificar si se obtuvo el equipo
         if ($equipo) {
             $response = ResponseHttp::statusMessage(202, 'Equipo obtenido correctamente.');
             $response = array_merge($response, $equipo);
@@ -128,8 +152,14 @@ class EquipoController {
         }
     }
 
+    /**
+     * Función que se encarga de eliminar un equipo por su id
+     * 
+     * @param int $id
+     * @return void
+     */
     public function delete($id) {
-
+        // Verificar si el token ha expirado
         $fecha = $this->authController->verificarToken();
 
         if ($fecha){
@@ -138,9 +168,11 @@ class EquipoController {
             exit();
         }
         
+        // Crear un objeto Equipo
         $equipo = new Equipo($id, "", "", "", "", "");
         $equipo = $equipo->delete();
 
+        // Verificar si se eliminó el equipo
         if ($equipo > 0) {
             $response = ResponseHttp::statusMessage(202, 'Equipo eliminado correctamente.');
             echo json_encode($response, JSON_PRETTY_PRINT);
@@ -152,8 +184,15 @@ class EquipoController {
         }
     }
 
+    /**
+     * Función que se encarga de actualizar un equipo por su id
+     * 
+     * @param int $id
+     * @param array $data
+     * @return void
+     */
     public function update($id, $data) {
-
+        // Verificar si el token ha expirado
         $fecha = $this->authController->verificarToken();
 
         if ($fecha){
@@ -162,6 +201,7 @@ class EquipoController {
             exit();
         }
 
+        // Verificar si el equipo existe
         $equipoExistente = new Equipo($id, "", "", "", "", "");
         $equipoExistente = $equipoExistente->getById();
 

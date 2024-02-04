@@ -43,10 +43,19 @@ class Usuario
      */
     public string $rol;
 
+    /**
+     * @var int $confirmado Si el usuario ha confirmado su email.
+     */
     public int $confirmado;
 
+    /**
+     * @var string $token El token del usuario.
+     */
     public string $token;
 
+    /**
+     * @var string $token_exp La fecha de expiración del token.
+     */
     public string $token_exp;
 
     /**
@@ -165,9 +174,6 @@ class Usuario
     {
         $this->token_exp = $token_exp;
     }
-
-
-
 
     /**
      * Crea una nueva instancia de la clase Usuario a partir de un array de datos.

@@ -7,15 +7,30 @@ use Firebase\JWT\ExpiredException;
 use PDOException;
 class Security {
 
+    /**
+     * Función que devuelve la clave secreta
+     * @return string
+     */
     final public static function clavesecreta(){
         return $_ENV['SECRET_KEY'];
     }
 
+    /**
+     * Función que encripta una contraseña
+     * @param string $string
+     * @return string
+     */
     final public static function encriptarPass($string) {
         $password = password_hash($string, PASSWORD_DEFAULT);
         return $password;
     }
 
+    /**
+     * Función que verifica si una contraseña es correcta
+     * @param string $string
+     * @param string $hash
+     * @return bool
+     */
     final public static function verificarPass($string, $hash) {
         if (password_verify($string, $hash)) {
             return true;
@@ -24,6 +39,11 @@ class Security {
         }
     }
 
+    /**
+     * Función que crea un token
+     * @param array $data
+     * @return string
+     */
     final public static function crearToken(array $data):string{
         $time = strtotime('now');
         $exp = strtotime('+30 minutes');
@@ -36,6 +56,11 @@ class Security {
         return JWT::encode($token, $_ENV['SECRET_KEY'], 'HS256');
     }
 
+    /**
+     * Función que crea un token expirado
+     * @param array $data
+     * @return string
+     */
     final public static function crearTokenExpirado(array $data):string{
         $time = strtotime('now');
         $exp = strtotime('now');
@@ -49,6 +74,11 @@ class Security {
     }
 
 
+    /**
+     * Función que expira un token y lo actualiza en la base de datos
+     * @param string $token
+     * @return bool
+     */
     final public static function expirarToken($token, $db) {
         try {
             // Decodificar el token para obtener la fecha de expiración
@@ -86,6 +116,10 @@ class Security {
         }
     }
 
+    /**
+     * Función que obtiene el token de la cabecera de la solicitud
+     * @return string
+     */
     final public static function getToken() {
         $headers = apache_request_headers();
         if (!isset($headers['Authorization'])) {
@@ -109,6 +143,11 @@ class Security {
     }
 
 
+    /**
+     * Función que decodifica un token
+     * @param string $token
+     * @return object
+     */
     final public static function decodeToken($token) {
         try {
             $decodeToken = JWT::decode($token, new Key(Security::clavesecreta(), 'HS256'));

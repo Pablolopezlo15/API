@@ -17,7 +17,7 @@ class Email {
 
     public function enviarConfirmacion() {
         try{
-            $mail = new PHPMailer(true); // Habilita las excepciones
+            $mail = new PHPMailer(true);
             $mail->isSMTP();                                            
             $mail->Host       = $_ENV['MAIL_HOST']; 
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;                 

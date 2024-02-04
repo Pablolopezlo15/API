@@ -8,6 +8,12 @@ use Services\UsuarioService;
 use Repositories\UsuarioRepository;
 use Lib\Email;
 class UsuarioController {
+
+    /**
+     * @var Pages $pages
+     * @var Email $email
+     * @var UsuarioService $usuarioService
+     */
     private Pages $pages;
     private Email $email;
     private UsuarioService $usuarioService;
@@ -20,7 +26,12 @@ class UsuarioController {
         $this->usuarioService = new UsuarioService(new UsuarioRepository());
     }
 
-    // Método para validar el formulario de usuario
+    /**
+     * Función que se encarga de validar el formulario de registro
+     * 
+     * @param array $data
+     * @return array
+     */
     private function validarFormulario($data) {
         $nombre = filter_var($data['nombre'], FILTER_SANITIZE_STRING);
         $apellidos = filter_var($data['apellidos'], FILTER_SANITIZE_STRING);
@@ -30,7 +41,7 @@ class UsuarioController {
         // Validación de regex
         $nombreRegex = "/^[a-zA-ZáéíóúÁÉÍÓÚ ]*$/";
         $emailRegex = "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
-        $passwordRegex = "/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/"; // Al menos una letra, un número y mínimo 8 caracteres
+        $passwordRegex = "/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/";
     
     
         if (empty($nombre) || !preg_match($nombreRegex, $nombre)) {
@@ -58,7 +69,12 @@ class UsuarioController {
         }
     }
 
-    // Método para validar el inicio de sesión
+    /**
+     * Función que se encarga de validar el login
+     * 
+     * @param array $data
+     * @return array|bool
+     */
     private function validarLogin($data) {
 
         $email = filter_var($data['email'], FILTER_VALIDATE_EMAIL);
@@ -85,7 +101,13 @@ class UsuarioController {
         }
     }
 
-    // Método para registrar un nuevo usuario
+    /**
+     * Función que se encarga de registrar un usuario, enviar un correo de confirmación y redirigir a la página de login
+     * 
+     * @param string $email
+     * @param string $token
+     * @return void
+     */
     public function registro(){
         if (($_SERVER['REQUEST_METHOD']) === 'POST'){
             if ($_POST['data']){
@@ -118,35 +140,74 @@ class UsuarioController {
         $this->pages->render('/usuario/registro', ['errores' => $this->errores]);
     }
 
-    // Método para confirmar la cuenta de un usuario
+    /**
+     * Función que se encarga de confirmar la cuenta de un usuario
+     * 
+     * @param string $token
+     * @return void
+     */
     public function confirmarCuenta($token){
         $this->usuarioService->confirmarCuenta($token);
         $this->pages->render('/usuario/login', ['mensaje' => 'Cuenta confirmada correctamente']);
     }
 
+    /**
+     * Función que se encarga de volver a enviar un correo de confirmación
+     * 
+     * @param string $email
+     * @return void
+     */
     public function volverAmandarConfirmacion($email){
         $this->usuarioService->volverAmandarConfirmacion($email);
     }
 
+    /**
+     * Función que se encarga de actualizar el token en la base de datos
+     * 
+     * @return void
+     */
     public function updateToken($id, $token){
         $this->usuarioService->updateToken($id, $token);
     }
 
+    /**
+     * Función que se encarga de verificar fecha de expiración del token
+     * 
+     * @param string $token
+     * @return string
+     */
     public function verificarFechaExpiracion($token){
         $fecha = $this->usuarioService->verificarFechaExpiracion($token);
         return $fecha;
     }
 
+    /**
+     * Función que se encarga de validar los datos del token
+     * 
+     * @param string $token
+     * @return array
+     */
     public function validarDatosToken($token){
         $datos = $this->usuarioService->validarDatosToken($token);
         return $datos;
     }
 
+    /**
+     * Función que se encarga de obtener el token de un usuario
+     * 
+     * @param int $id
+     * @return string
+     */
     public function obtenerToken($id){
         return $this->usuarioService->obtenerToken($id);
     }
 
-    // Método para iniciar sesión
+    /**
+     * Función que se encarga de loguear a un usuario
+     * 
+     * @param string $token
+     * @return void
+     */
     public function login(){
         if (($_SERVER['REQUEST_METHOD']) === 'POST'){
             if ($_POST['data']){
@@ -177,82 +238,15 @@ class UsuarioController {
         $this->pages->render('/usuario/login', ['errores' => $this->errores]);
     }
 
-    // Método para cerrar sesión
+    /**
+     * Función que se encarga de cerrar la sesión de un usuario
+     * 
+     * @return void
+     */
     public function logout(){
         Utils::deleteSession('login');
         header("Location:".BASE_URL."usuario/login");
         exit();
     }
 
-    // Método para eliminar un usuario
-    public function eliminar($id){
-        $this->usuarioService->delete($id);
-        header("Location:".BASE_URL."usuario/verTodos");
-    }
-
-    // Método para editar un usuario
-    public function editar($id){
-        $usuarios = $this->usuarioService->verTodos();
-        $this->pages->render('/usuario/verTodos', ['usuarios' => $usuarios, 'id' => $id]);
-    }
-
-    // Método para validar la edición de un usuario
-    public function validarEditar($data){
-        $id = filter_var($data['id'], FILTER_SANITIZE_STRING);
-        $nombre = filter_var($data['nombre'], FILTER_SANITIZE_STRING);
-        $apellidos = filter_var($data['apellidos'], FILTER_SANITIZE_STRING);
-        $email = filter_var($data['email'], FILTER_VALIDATE_EMAIL);
-        $rol = filter_var($data['rol'], FILTER_SANITIZE_STRING);
-    
-        $nombreRegex = "/^[a-zA-ZáéíóúÁÉÍÓÚ ]*$/";
-        $emailRegex = "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
-        $passwordRegex = "/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/"; 
-    
-    
-        if (!preg_match($nombreRegex, $nombre)) {
-            $this->errores[] = 'El nombre solo debe contener letras y espacios.';
-        }
-        if (!preg_match($nombreRegex, $apellidos)) {
-            $this->errores[] = 'Los apellidos solo deben contener letras y espacios.';
-        }
-        if (!preg_match($emailRegex, $email)) {
-            $this->errores[] = 'El correo electrónico no es válido.';
-        }
-
-        if (empty($this->errores)) {
-            return [
-                'id' => $id,
-                'nombre' => $nombre,
-                'apellidos' => $apellidos,
-                'email' => $email,
-                'rol' => $rol
-            ];
-        } else {
-            return $this->errores;
-        }
-    }
-
-    // Método para actualizar un usuario
-    public function actualizar(){
-        if (($_SERVER['REQUEST_METHOD']) === 'POST'){
-            if ($_POST['data']){
-                $registrado = $this->validarEditar($_POST['data']);
-
-                if ($registrado != "") {
-                    $usuario = Usuario::fromArray($registrado);
-
-                    $save = $this->usuarioService->update($usuario);
-                    if ($save){
-                        $_SESSION['register'] = "complete";
-                    } else {
-                        $_SESSION['register'] = "failed";
-                    }
-                } else {
-                    $_SESSION['register'] = "failed";
-                }
-                $usuario->desconecta();
-            }
-        }
-        header("Location:".BASE_URL."usuario/verTodos");
-    }
 }
