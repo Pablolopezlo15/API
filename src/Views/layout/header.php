@@ -28,13 +28,15 @@
                     </div>  
 
                     <div class="nav-container login">
-                        <?php if (!isset($_SESSION['login']) OR $_SESSION['login']=='failed'):?>
+                        <?php if (!isset($_SESSION['login']) OR ($_SESSION['login']=='failed') OR ($_SESSION['login']=='noconfirmado')):?>
                             <a href="<?=BASE_URL?>usuario/login/">Identificarse</a>
                             <a href="<?=BASE_URL?>usuario/registro/">Registrarse</a>
                         <?php else:?>
+                            <?php if ((isset($_SESSION['login']))  && ($_SESSION['login'] != 'noconfirmado')):?>
                             <p><?=$_SESSION['login']->nombre?> <?=$_SESSION['login']->apellidos?></p>
                             <a href="<?=BASE_URL?>auth/nuevoToken/">Nuevo Token</a>
                             <a href="<?=BASE_URL?>usuario/logout/">Cerrar Sesión</a>
+                            <?php endif;?>
                         <?php endif;?>
                     </div>
                     <div class="logo">

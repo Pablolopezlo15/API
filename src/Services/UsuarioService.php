@@ -17,6 +17,10 @@ class UsuarioService {
         return $this->usuarioRepository->confirmarCuenta($token);
     }
 
+    public function volverAmandarConfirmacion($id){
+        return $this->usuarioRepository->volverAmandarConfirmacion($id);
+    }
+
     public function verificarFechaExpiracion($token){
         return $this->usuarioRepository->verificarFechaExpiracion($token);
     }

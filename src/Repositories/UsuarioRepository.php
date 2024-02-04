@@ -62,24 +62,33 @@ class UsuarioRepository {
         return $result;
     }
 
-    // public function confirmarCuenta($token){
-    //     if ($token) {
-    //         $tokenDecoded = $this->security->decodeToken($token);
-    //         $email = $tokenDecoded->data[2];
-    //         $datenow = date('Y-m-d H:i:s'); 
+    public function volverAmandarConfirmacion($id){
+        $email = $id;
 
-    //         $this->executeQuery("UPDATE usuarios SET confirmado = 1 WHERE email = :email", $email);
-    //         $this->executeQuery("UPDATE usuarios SET token = '' WHERE email = :email", $email);
+        $usuario = $this->buscaMail($email);
+        $id = $usuario->id;
+        $nombre = $usuario->nombre;
+        $email = $usuario->email;
+        $rol = $usuario->rol;
+        $confirmado = $usuario->confirmado;
+        $data = [];
+        array_push($data, $id, $nombre, $email, $rol, $confirmado);
+        $token = $this->security->crearToken($data);
+        $token_exp = date('Y-m-d H:i:s', strtotime('+30 minutes'));
 
-    
-    //         $this->db->close();
-    
-    //         return true;
-    //     } else {
-    //         echo "No se ha podido confirmar la cuenta";
-    //         return false;
-    //     }
-    // }
+        $ins = $this->db->prepara("UPDATE usuarios SET token = :token, token_exp = :token_exp WHERE email = :email");
+
+        $ins->bindValue(':token', $token);
+        $ins->bindValue(':token_exp', $token_exp);
+        $ins->bindValue(':email', $email);
+        $ins->execute();
+        $ins->closeCursor();
+        $ins=null;
+
+        $this->email = new Email($email, $token);
+        $this->email->enviarConfirmacion();
+        header("Location:".BASE_URL."usuario/login");
+    }
     
     public function confirmarCuenta($token){
 

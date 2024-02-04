@@ -124,6 +124,10 @@ class UsuarioController {
         $this->pages->render('/usuario/login', ['mensaje' => 'Cuenta confirmada correctamente']);
     }
 
+    public function volverAmandarConfirmacion($email){
+        $this->usuarioService->volverAmandarConfirmacion($email);
+    }
+
     public function updateToken($id, $token){
         $this->usuarioService->updateToken($id, $token);
     }

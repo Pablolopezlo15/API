@@ -48,6 +48,10 @@ class Routes {
             return (new UsuarioController())->registro();
         });
 
+        Router::add('GET', '/volveramandarcorreo/{id}', function($id) {
+            return (new UsuarioController())->volverAmandarConfirmacion($id);
+        });
+
         Router::add('GET', '/usuario/login', function() {
             return (new UsuarioController())->login();
         });
