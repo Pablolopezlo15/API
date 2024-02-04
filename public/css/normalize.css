@@ -99,6 +99,10 @@ b{
 
 }
 
+strong{
+  text-align: center;
+}
+
 .eliminar{
   text-decoration: none;
   color: var(--colorTexto);

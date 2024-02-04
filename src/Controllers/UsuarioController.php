@@ -43,6 +43,7 @@ class UsuarioController {
         $emailRegex = "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
         $passwordRegex = "/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/";
     
+        $this->errores = [];
     
         if (empty($nombre) || !preg_match($nombreRegex, $nombre)) {
             $this->errores[] = 'El nombre solo debe contener letras y espacios.';
@@ -56,16 +57,22 @@ class UsuarioController {
         if (empty($password) || !preg_match($passwordRegex, $password)) {
             $this->errores[] = 'La contraseña debe tener al menos una letra, un número y un mínimo de 8 caracteres.';
         }
-
+    
         if (empty($this->errores)) {
             return [
-                'nombre' => $nombre,
-                'apellidos' => $apellidos,
-                'email' => $email,
-                'password' => password_hash($password, PASSWORD_BCRYPT, ['cost'=>4]),
+                'valid' => true,
+                'data' => [
+                    'nombre' => $nombre,
+                    'apellidos' => $apellidos,
+                    'email' => $email,
+                    'password' => password_hash($password, PASSWORD_BCRYPT, ['cost'=>4]),
+                ]
             ];
         } else {
-            return $this->errores;
+            return [
+                'valid' => false,
+                'data' => $this->errores
+            ];
         }
     }
 
@@ -112,20 +119,11 @@ class UsuarioController {
         if (($_SERVER['REQUEST_METHOD']) === 'POST'){
             if ($_POST['data']){
                 $registrado = $this->validarFormulario($_POST['data']);
-
-                if ($registrado != ""){
-                    if (is_array($registrado)) {
-         
-                        $usuario = Usuario::fromArray($registrado);
-                        $save = $this->usuarioService->create($usuario);
-                        $registrado = "";
-                        if ($save){
-                            $_SESSION['register'] = "complete";
-                            
-                        } else {
-                            echo "Error al crear el usuario\n";
-                            $_SESSION['register'] = "failed";
-                        }
+                if ($registrado['valid']){
+                    $usuario = Usuario::fromArray($registrado['data']);
+                    $save = $this->usuarioService->create($usuario);
+                    if ($save){
+                        $_SESSION['register'] = "complete";
                     } else {
                         $_SESSION['register'] = "failed";
                     }

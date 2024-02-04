@@ -106,14 +106,18 @@ form {
     font-size: var(--font-size-pequeño);
   }
   
-  strong.success {
+.success {
     color: green;
   }
   
-  strong.error {
+.error {
     color: red;
   }
 
+  .errores {
+    text-align: center;
+    color: red;
+  }
   button.btn {
     background-color: var(--colorBoton);
     color: white;

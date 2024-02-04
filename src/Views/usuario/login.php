@@ -6,9 +6,9 @@
         <strong class="exito">Login completado correctamente</strong>
     <?php elseif(isset($_SESSION['login']) && $_SESSION['login'] == 'failed'):?>
         <strong class="errores">No se ha podido iniciar sesión, el correo o la contraseña no son correctos</strong>
+        <?php Utils::deleteSession('login'); ?>
     <?php elseif(isset($_SESSION['login']) && $_SESSION['login'] == 'noconfirmado'):?>
         <strong class="errores">La cuenta no está confirmada, revisa tu correo <a href="<?=BASE_URL?>volveramandarcorreo/<?=$_POST['data']['email']?>">Mandar una confirmacion nueva</a></strong>
-        
         <?php Utils::deleteSession('login'); ?>
         <?php if (!empty($errores)): ?>
         <div class="errores">
