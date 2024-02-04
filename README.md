@@ -16,7 +16,9 @@ Instalar las dependencias de composer
 ```
 Ejecutar el SQL de la base de datos
 
-Cambiar el BASE_URL si ubica el proyecto fuera de la raiz de htdocs (en xampp)
+Cambiar el BASE_URL si ubica el proyecto fuera de la raiz de htdocs (en xampp).
+
+Crear .env con tus datos.
 
 ## API Reference
 
