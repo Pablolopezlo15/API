@@ -1,7 +1,7 @@
 
 # ApiRest Ful Futbol 
 
-Api que hace CRUD a una tabla de equipos de futbol con verificacion por Token JWT
+Api que hace CRUD a una tabla de equipos de futbol con verificación por Token JWT
 
 
 
