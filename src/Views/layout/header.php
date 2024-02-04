@@ -6,7 +6,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Tienda Pablo</title>
+    <title>Api Fútbol Pablo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.7.0/remixicon.css"></link>
     <link rel="stylesheet" href="<?=BASE_URL?>public/css/normalize.css">
     <link rel="stylesheet" href="<?=BASE_URL?>public/css/styles.css">
